@@ -317,6 +317,50 @@
             display: none !important;
         }
 
+        /* ─── SIZE CONTROL ─── */
+        .size-control {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .size-control .label {
+            font-weight: 600;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+            margin-right: 4px;
+        }
+
+        .size-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+
+        .size-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+            color: #fff;
+        }
+
+        .size-btn.active {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: rgba(255, 255, 255, 0.8);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
         /* ─── MONTH GRID ─── */
         .month-grid-section {
             margin-bottom: 16px;
@@ -335,17 +379,108 @@
 
         .month-grid {
             display: grid;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        /* ─── SIZE: SMALL ─── */
+        .month-grid.size-small {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 8px;
+        }
+        .month-grid.size-small .month-card {
+            padding: 6px 8px;
+        }
+        .month-grid.size-small .month-card .month-name {
+            font-size: 0.7rem;
+        }
+        .month-grid.size-small .month-card .mini-stats {
+            font-size: 0.5rem;
+            padding: 1px 4px;
+        }
+        .month-grid.size-small .month-card .card-details table {
+            font-size: 0.6rem;
+        }
+        .month-grid.size-small .month-card .card-details thead th,
+        .month-grid.size-small .month-card .card-details tbody td {
+            padding: 2px 4px;
+        }
+        .month-grid.size-small .month-card .card-details .total-row td {
+            padding: 2px 4px;
+        }
+        .month-grid.size-small .month-card .expand-icon {
+            font-size: 0.55rem;
+        }
+
+        /* ─── SIZE: MEDIUM (default) ─── */
+        .month-grid.size-medium {
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 10px;
         }
+        .month-grid.size-medium .month-card {
+            padding: 8px 10px;
+        }
+        .month-grid.size-medium .month-card .month-name {
+            font-size: 0.85rem;
+        }
+        .month-grid.size-medium .month-card .mini-stats {
+            font-size: 0.6rem;
+            padding: 1px 6px;
+        }
+        .month-grid.size-medium .month-card .card-details table {
+            font-size: 0.75rem;
+        }
+        .month-grid.size-medium .month-card .card-details thead th,
+        .month-grid.size-medium .month-card .card-details tbody td {
+            padding: 4px 8px;
+        }
+        .month-grid.size-medium .month-card .card-details .total-row td {
+            padding: 4px 8px;
+        }
+        .month-grid.size-medium .month-card .expand-icon {
+            font-size: 0.65rem;
+        }
 
+        /* ─── SIZE: LARGE ─── */
+        .month-grid.size-large {
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 14px;
+        }
+        .month-grid.size-large .month-card {
+            padding: 12px 16px;
+        }
+        .month-grid.size-large .month-card .month-name {
+            font-size: 1.05rem;
+        }
+        .month-grid.size-large .month-card .mini-stats {
+            font-size: 0.75rem;
+            padding: 2px 10px;
+        }
+        .month-grid.size-large .month-card .card-details table {
+            font-size: 0.9rem;
+        }
+        .month-grid.size-large .month-card .card-details thead th,
+        .month-grid.size-large .month-card .card-details tbody td {
+            padding: 6px 12px;
+        }
+        .month-grid.size-large .month-card .card-details .total-row td {
+            padding: 6px 12px;
+        }
+        .month-grid.size-large .month-card .expand-icon {
+            font-size: 0.8rem;
+        }
+        .month-grid.size-large .month-card .month-number {
+            font-size: 0.65rem;
+            padding: 0px 8px;
+        }
+
+        /* ─── MONTH CARD ─── */
         .month-card {
             background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 10px;
-            padding: 8px 10px;
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
@@ -365,7 +500,17 @@
             box-shadow: 0 4px 20px rgba(11, 43, 74, 0.15);
             grid-column: 1 / -1;
             z-index: 5;
-            padding: 10px 12px;
+        }
+
+        /* When active, override size-specific padding */
+        .month-card.active {
+            padding: 10px 12px !important;
+        }
+        .month-grid.size-small .month-card.active {
+            padding: 10px 12px !important;
+        }
+        .month-grid.size-large .month-card.active {
+            padding: 14px 20px !important;
         }
 
         .month-card .card-header {
@@ -378,17 +523,14 @@
 
         .month-card .month-name {
             font-weight: 700;
-            font-size: 0.85rem;
             color: #0b2b4a;
             letter-spacing: 0.3px;
         }
 
         .month-card .month-number {
-            font-size: 0.55rem;
             font-weight: 600;
             color: #b0c4db;
             background: #eef4fa;
-            padding: 0px 6px;
             border-radius: 10px;
             margin-left: 2px;
         }
@@ -396,10 +538,8 @@
         .month-card .mini-stats {
             display: flex;
             gap: 3px;
-            font-size: 0.6rem;
             color: #1a2b44;
             background: rgba(242, 247, 253, 0.9);
-            padding: 1px 6px;
             border-radius: 16px;
             white-space: nowrap;
         }
@@ -420,9 +560,8 @@
 
         .month-card .expand-icon {
             color: #8a9eb8;
-            font-size: 0.65rem;
-            margin-left: 2px;
             transition: transform 0.25s;
+            margin-left: 2px;
         }
 
         .month-card.active .expand-icon {
@@ -447,7 +586,6 @@
         .month-card .card-details table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.75rem;
             border-radius: 6px;
             overflow: hidden;
             border: 1px solid rgba(230, 237, 246, 0.6);
@@ -459,9 +597,7 @@
 
         .month-card .card-details thead th {
             text-align: left;
-            padding: 4px 8px;
             font-weight: 600;
-            font-size: 0.6rem;
             text-transform: uppercase;
             letter-spacing: 0.3px;
             color: #3a506e;
@@ -473,10 +609,8 @@
         }
 
         .month-card .card-details tbody td {
-            padding: 3px 8px;
             border-bottom: 1px solid #edf2f8;
             color: #1a2b44;
-            font-size: 0.7rem;
         }
 
         .month-card .card-details tbody td:not(:first-child) {
@@ -498,8 +632,6 @@
 
         .month-card .card-details .total-row td {
             border-top: 2px solid #c8d6e8;
-            padding: 4px 8px;
-            font-size: 0.7rem;
         }
 
         .month-card .card-details .total-row td:not(:first-child) {
@@ -629,31 +761,34 @@
             }
 
             .month-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
                 gap: 6px;
+            }
+            .month-grid.size-small {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            .month-grid.size-medium {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+            .month-grid.size-large {
+                grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
             }
 
             .month-card {
                 padding: 6px 8px;
             }
-
             .month-card .month-name {
                 font-size: 0.75rem;
             }
-
             .month-card .mini-stats {
                 font-size: 0.55rem;
                 padding: 1px 4px;
             }
-
             .month-card.active {
-                padding: 8px 10px;
+                padding: 8px 10px !important;
             }
-
             .month-card .card-details table {
                 font-size: 0.65rem;
             }
-
             .month-card .card-details thead th,
             .month-card .card-details tbody td {
                 padding: 2px 6px;
@@ -679,6 +814,14 @@
             #circle-small, #circle-medium {
                 display: block;
             }
+
+            .size-control .label {
+                font-size: 0.6rem;
+            }
+            .size-btn {
+                font-size: 0.55rem;
+                padding: 2px 10px;
+            }
         }
 
         @media (min-width: 601px) and (max-width: 900px) {
@@ -691,9 +834,6 @@
         }
 
         @media (min-width: 901px) {
-            .month-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
             .month-card.active {
                 grid-column: 1 / -1;
             }
@@ -751,10 +891,16 @@
 
         <!-- ─── MONTH GRID ─── -->
         <div class="month-grid-section">
-            <div class="section-title">
-                <i class="fas fa-calendar-alt"></i> Click a month to expand
+            <div class="section-title" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                <span><i class="fas fa-calendar-alt"></i> Click a month to expand</span>
+                <div class="size-control">
+                    <span class="label">Size:</span>
+                    <button class="size-btn" data-size="small">Small</button>
+                    <button class="size-btn active" data-size="medium">Medium</button>
+                    <button class="size-btn" data-size="large">Large</button>
+                </div>
             </div>
-            <div class="month-grid" id="monthGrid">
+            <div class="month-grid size-medium" id="monthGrid">
                 <!-- dynamically populated -->
             </div>
         </div>
@@ -788,6 +934,38 @@
         const headerMonthTitle = document.getElementById('headerMonthTitle');
         const uploadCard = document.getElementById('uploadCard');
         const folderHint = document.getElementById('folderHint');
+        const sizeBtns = document.querySelectorAll('.size-btn');
+
+        // ─── Size Control ─────────────────────────────────────────────────────
+        function setCardSize(size) {
+            // Remove all size classes
+            monthGrid.classList.remove('size-small', 'size-medium', 'size-large');
+            monthGrid.classList.add(`size-${size}`);
+
+            // Update button states
+            sizeBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.size === size);
+            });
+
+            // Save preference
+            localStorage.setItem('pif-card-size', size);
+        }
+
+        // Load saved size preference
+        function loadSizePreference() {
+            const saved = localStorage.getItem('pif-card-size');
+            if (saved && ['small', 'medium', 'large'].includes(saved)) {
+                setCardSize(saved);
+            } else {
+                setCardSize('medium');
+            }
+        }
+
+        sizeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                setCardSize(this.dataset.size);
+            });
+        });
 
         // ─── Helpers ──────────────────────────────────────────────────────────
         function showError(text) {
@@ -1069,7 +1247,6 @@
         async function fetchExcelFilesFromRepo() {
             hideError();
 
-            // ─── ALL POSSIBLE FILENAME PATTERNS ──────────────────────────────
             const monthNames = [
                 'January', 'February', 'March', 'April', 'May', 'June',
                 'July', 'August', 'September', 'October', 'November', 'December'
@@ -1077,58 +1254,45 @@
 
             const monthAbbr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-            // Build all possible filename variations
             const allPatterns = [];
 
             // Title case: January.xlsx
-            for (const m of monthNames) {
-                allPatterns.push(`${m}.xlsx`);
-            }
-
+            for (const m of monthNames) allPatterns.push(`${m}.xlsx`);
             // Lowercase: january.xlsx
-            for (const m of monthNames) {
-                allPatterns.push(`${m.toLowerCase()}.xlsx`);
-            }
+            for (const m of monthNames) allPatterns.push(`${m.toLowerCase()}.xlsx`);
+            // UPPERCASE: JANUARY.xlsx
+            for (const m of monthNames) allPatterns.push(`${m.toUpperCase()}.xlsx`);
 
-            // UPPERCASE: JANUARY.xlsx  ← THIS IS THE FIX FOR YOUR FILES
-            for (const m of monthNames) {
-                allPatterns.push(`${m.toUpperCase()}.xlsx`);
-            }
-
-            // Abbreviations: Jan.xlsx, JAN.xlsx, jan.xlsx
+            // Abbreviations
             for (const a of monthAbbr) {
                 allPatterns.push(`${a}.xlsx`);
                 allPatterns.push(`${a.toLowerCase()}.xlsx`);
                 allPatterns.push(`${a.toUpperCase()}.xlsx`);
             }
 
-            // With underscores: January_data.xlsx, JANUARY_data.xlsx
+            // With underscores
             for (const m of monthNames) {
                 allPatterns.push(`${m}_data.xlsx`);
                 allPatterns.push(`${m.toUpperCase()}_data.xlsx`);
                 allPatterns.push(`${m.toLowerCase()}_data.xlsx`);
             }
 
-            // With year: January 2026.xlsx, JANUARY 2026.xlsx
+            // With year
             for (const m of monthNames) {
                 allPatterns.push(`${m} 2026.xlsx`);
                 allPatterns.push(`${m.toUpperCase()} 2026.xlsx`);
             }
 
-            // Without extension: January, JANUARY
+            // Without extension
             for (const m of monthNames) {
                 allPatterns.push(m);
                 allPatterns.push(m.toUpperCase());
                 allPatterns.push(m.toLowerCase());
             }
 
-            // Deduplicate
             const uniquePatterns = [...new Set(allPatterns)];
-
             let loadedCount = 0;
-            const errors = [];
 
-            // Show loading state
             monthGrid.innerHTML = `
                     <div class="loading-message">
                         <i class="fas fa-spinner"></i>
@@ -1138,7 +1302,6 @@
 
             for (const fileName of uniquePatterns) {
                 try {
-                    // Try to fetch the file
                     const response = await fetch(fileName);
                     if (!response.ok) continue;
 
@@ -1146,25 +1309,20 @@
                     const result = await processFileData(fileData, fileName);
                     const { month, overallMap, uniqMap } = result;
 
-                    // Only add if we don't already have this month
                     if (!monthData[month]) {
                         monthData[month] = { overallMap, uniqMap };
                         loadedCount++;
-                        console.log(`✅ Loaded: ${month} from ${fileName}`);
                     }
                 } catch (err) {
-                    // Silently skip errors
                     continue;
                 }
             }
 
             if (loadedCount > 0) {
-                // Success - hide the upload card and build the grid
                 uploadCard.classList.add('hidden');
                 folderHint.innerHTML = `<i class="fas fa-check-circle" style="color:#0b2b4a;"></i> Loaded ${loadedCount} month(s) from repository.`;
                 buildGrid();
             } else {
-                // No files found - show helpful message
                 monthGrid.innerHTML = `
                         <div class="no-data-message">
                             <i class="fas fa-file-excel"></i>
@@ -1261,11 +1419,12 @@
             footerMonthTag.textContent = '—';
             updateHeaderTitle(null);
 
-            // Attempt to reload from repository
             setTimeout(fetchExcelFilesFromRepo, 300);
         });
 
         // ─── Initialise ──────────────────────────────────────────────────────
+        loadSizePreference();
+
         monthGrid.innerHTML = `
                 <div class="loading-message">
                     <i class="fas fa-spinner"></i>
@@ -1276,7 +1435,6 @@
         footerMonthTag.textContent = '—';
         updateHeaderTitle(null);
 
-        // ─── Auto-load on startup ──────────────────────────────────────────
         setTimeout(fetchExcelFilesFromRepo, 200);
     </script>
 </body>
