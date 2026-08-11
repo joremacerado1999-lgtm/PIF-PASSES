@@ -103,7 +103,7 @@
             100% { transform: scale(1.1); }
         }
 
-        /* ─── DASHBOARD STYLES (overlaid on top) ─── */
+        /* ─── DASHBOARD STYLES ─── */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -578,6 +578,31 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
+        .loading-message {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 10px;
+        }
+
+        .loading-message i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* ─── RESPONSIVE ─── */
         @media (max-width: 600px) {
             body {
@@ -711,17 +736,15 @@
 
         <!-- ─── UPLOAD CARD ─── -->
         <div class="upload-card" id="uploadCard">
-            <div class="title"><i class="fas fa-folder-tree"></i> Load PASSES folder</div>
+            <div class="title"><i class="fas fa-folder-tree"></i> Load Excel Files</div>
             <div class="file-input-wrapper">
-                <!-- Legacy fallback input, hidden by default -->
-                <input type="file" id="folderInput" webkitdirectory directory multiple accept=".xlsx,.xls" />
                 <div class="action-bar">
-                    <button class="btn btn-primary" id="loadBtn"><i class="fas fa-folder-open"></i> Browse</button>
+                    <button class="btn btn-primary" id="loadBtn"><i class="fas fa-folder-open"></i> Browse (Fallback)</button>
                     <button class="btn btn-outline" id="resetBtn"><i class="fas fa-undo-alt"></i> Reset</button>
                 </div>
             </div>
             <div class="folder-hint" id="folderHint">
-                <i class="fas fa-info-circle"></i> Select your <strong>PASSES</strong> folder. All monthly Excel files are processed automatically.
+                <i class="fas fa-info-circle"></i> Excel files are auto-loaded from the repository. Use the Browse button as a fallback.
             </div>
             <div id="errorMsg" class="alert hidden"></div>
         </div>
@@ -749,10 +772,8 @@
         // ─── Global data store ────────────────────────────────────────────────
         const monthData = {};
         let activeMonth = null;
-        let isProcessing = false;
 
         // ─── DOM refs ──────────────────────────────────────────────────────────
-        const folderInput = document.getElementById('folderInput');
         const loadBtn = document.getElementById('loadBtn');
         const resetBtn = document.getElementById('resetBtn');
         const errorMsg = document.getElementById('errorMsg');
@@ -767,65 +788,6 @@
         const headerMonthTitle = document.getElementById('headerMonthTitle');
         const uploadCard = document.getElementById('uploadCard');
         const folderHint = document.getElementById('folderHint');
-
-        // ─── IndexedDB Helpers (for storing folder permission) ──────────────
-        function openDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open('PIF_Passes_Storage', 1);
-                request.onupgradeneeded = (event) => {
-                    const db = event.target.result;
-                    if (!db.objectStoreNames.contains('handles')) {
-                        db.createObjectStore('handles');
-                    }
-                };
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
-        }
-
-        async function saveFileHandle(handle) {
-            const db = await openDB();
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction('handles', 'readwrite');
-                const store = tx.objectStore('handles');
-                store.put(handle, 'folder');
-                tx.oncomplete = () => resolve();
-                tx.onerror = () => reject(tx.error);
-                db.close();
-            });
-        }
-
-        async function getFileHandle() {
-            try {
-                const db = await openDB();
-                return new Promise((resolve, reject) => {
-                    const tx = db.transaction('handles', 'readonly');
-                    const store = tx.objectStore('handles');
-                    const request = store.get('folder');
-                    request.onsuccess = () => resolve(request.result || null);
-                    request.onerror = () => reject(request.error);
-                    db.close();
-                });
-            } catch {
-                return null;
-            }
-        }
-
-        async function deleteFileHandle() {
-            try {
-                const db = await openDB();
-                return new Promise((resolve, reject) => {
-                    const tx = db.transaction('handles', 'readwrite');
-                    const store = tx.objectStore('handles');
-                    store.delete('folder');
-                    tx.oncomplete = () => resolve();
-                    tx.onerror = () => reject(tx.error);
-                    db.close();
-                });
-            } catch {
-                // Ignore errors if the store doesn't exist
-            }
-        }
 
         // ─── Helpers ──────────────────────────────────────────────────────────
         function showError(text) {
@@ -954,7 +916,7 @@
                 monthGrid.innerHTML = `
                         <div class="no-data-message">
                             <i class="fas fa-folder-open"></i>
-                            No months loaded. Click "Browse" to select your PASSES folder.
+                            No months loaded. Upload Excel files to the repository or use the Browse button.
                         </div>
                     `;
                 updateHeaderTitle(null);
@@ -982,7 +944,6 @@
 
         // ─── toggle month expansion ──────────────────────────────────────────
         window.toggleMonth = function(month) {
-            if (isProcessing) return;
             if (activeMonth === month) {
                 activeMonth = null;
             } else {
@@ -1038,266 +999,254 @@
             }
         }
 
-        // ─── process a single file ──────────────────────────────────────────
-        function processFileContent(file) {
+        // ─── process file data from ArrayBuffer ─────────────────────────────
+        function processFileData(fileData, fileName) {
             return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const data = new Uint8Array(e.target.result);
-                        const workbook = XLSX.read(data, { type: 'array' });
+                try {
+                    const workbook = XLSX.read(fileData, { type: 'array' });
+                    const sheetNames = workbook.SheetNames;
+                    const allSheetName = sheetNames.find(s => s.toUpperCase() === 'ALL');
+                    const uniqSheetName = sheetNames.find(s => s.toUpperCase() === 'UNIQ');
 
-                        const sheetNames = workbook.SheetNames;
-                        const allSheetName = sheetNames.find(s => s.toUpperCase() === 'ALL');
-                        const uniqSheetName = sheetNames.find(s => s.toUpperCase() === 'UNIQ');
-
-                        if (!allSheetName || !uniqSheetName) {
-                            reject(new Error(`Sheet "ALL" or "UNIQ" missing in ${file.name}`));
-                            return;
-                        }
-
-                        const allSheet = workbook.Sheets[allSheetName];
-                        const allJson = XLSX.utils.sheet_to_json(allSheet);
-                        if (allJson.length === 0) {
-                            reject(new Error(`Sheet "ALL" is empty in ${file.name}`));
-                            return;
-                        }
-
-                        const uniqSheet = workbook.Sheets[uniqSheetName];
-                        const uniqJson = XLSX.utils.sheet_to_json(uniqSheet);
-                        if (uniqJson.length === 0) {
-                            reject(new Error(`Sheet "UNIQ" is empty in ${file.name}`));
-                            return;
-                        }
-
-                        const allHeader = Object.keys(allJson[0]);
-                        const uniqHeader = Object.keys(uniqJson[0]);
-                        const placementAllIdx = allHeader.findIndex(h => h.toUpperCase() === 'PLACEMENT');
-                        const placementUniqIdx = uniqHeader.findIndex(h => h.toUpperCase() === 'PLACEMENT');
-
-                        if (placementAllIdx === -1 || placementUniqIdx === -1) {
-                            reject(new Error(`Column "PLACEMENT" not found in ${file.name}`));
-                            return;
-                        }
-
-                        const overallMap = new Map();
-                        for (const row of allJson) {
-                            const placement = String(row[Object.keys(row)[placementAllIdx]] || '').trim();
-                            if (placement) {
-                                overallMap.set(placement, (overallMap.get(placement) || 0) + 1);
-                            }
-                        }
-
-                        const uniqMap = new Map();
-                        for (const row of uniqJson) {
-                            const placement = String(row[Object.keys(row)[placementUniqIdx]] || '').trim();
-                            if (placement) {
-                                uniqMap.set(placement, (uniqMap.get(placement) || 0) + 1);
-                            }
-                        }
-
-                        let month = guessMonthFromFilename(file.name);
-                        if (!month) {
-                            reject(new Error(`Could not detect month from filename: ${file.name}`));
-                            return;
-                        }
-                        resolve({ month, overallMap, uniqMap });
-                    } catch (err) {
-                        reject(err);
+                    if (!allSheetName || !uniqSheetName) {
+                        reject(new Error(`Sheet "ALL" or "UNIQ" missing in ${fileName}`));
+                        return;
                     }
-                };
-                reader.onerror = () => reject(new Error('File read error'));
-                reader.readAsArrayBuffer(file);
+
+                    const allSheet = workbook.Sheets[allSheetName];
+                    const allJson = XLSX.utils.sheet_to_json(allSheet);
+                    if (allJson.length === 0) {
+                        reject(new Error(`Sheet "ALL" is empty in ${fileName}`));
+                        return;
+                    }
+
+                    const uniqSheet = workbook.Sheets[uniqSheetName];
+                    const uniqJson = XLSX.utils.sheet_to_json(uniqSheet);
+                    if (uniqJson.length === 0) {
+                        reject(new Error(`Sheet "UNIQ" is empty in ${fileName}`));
+                        return;
+                    }
+
+                    const allHeader = Object.keys(allJson[0]);
+                    const uniqHeader = Object.keys(uniqJson[0]);
+                    const placementAllIdx = allHeader.findIndex(h => h.toUpperCase() === 'PLACEMENT');
+                    const placementUniqIdx = uniqHeader.findIndex(h => h.toUpperCase() === 'PLACEMENT');
+
+                    if (placementAllIdx === -1 || placementUniqIdx === -1) {
+                        reject(new Error(`Column "PLACEMENT" not found in ${fileName}`));
+                        return;
+                    }
+
+                    const overallMap = new Map();
+                    for (const row of allJson) {
+                        const placement = String(row[Object.keys(row)[placementAllIdx]] || '').trim();
+                        if (placement) {
+                            overallMap.set(placement, (overallMap.get(placement) || 0) + 1);
+                        }
+                    }
+
+                    const uniqMap = new Map();
+                    for (const row of uniqJson) {
+                        const placement = String(row[Object.keys(row)[placementUniqIdx]] || '').trim();
+                        if (placement) {
+                            uniqMap.set(placement, (uniqMap.get(placement) || 0) + 1);
+                        }
+                    }
+
+                    let month = guessMonthFromFilename(fileName);
+                    if (!month) {
+                        reject(new Error(`Could not detect month from filename: ${fileName}`));
+                        return;
+                    }
+                    resolve({ month, overallMap, uniqMap });
+                } catch (err) {
+                    reject(err);
+                }
             });
         }
 
-        // ─── process an array of files ──────────────────────────────────────
-        async function processFolder(files) {
+        // ─── Fetch Excel files from the repository ──────────────────────────
+        async function fetchExcelFilesFromRepo() {
             hideError();
-            const fileArray = Array.from(files);
-            const excelFiles = fileArray.filter(f =>
-                f.name.endsWith('.xlsx') || f.name.endsWith('.xls')
-            );
-            if (excelFiles.length === 0) {
-                showError('No Excel files found in the selected folder.');
-                return false;
-            }
 
-            for (const key in monthData) delete monthData[key];
-            activeMonth = null;
+            // List of possible month filenames to try
+            const monthFileNames = [
+                'January.xlsx', 'February.xlsx', 'March.xlsx', 'April.xlsx',
+                'May.xlsx', 'June.xlsx', 'July.xlsx', 'August.xlsx',
+                'September.xlsx', 'October.xlsx', 'November.xlsx', 'December.xlsx'
+            ];
 
-            let successCount = 0;
+            // Also try lowercase and various common naming patterns
+            const patterns = [
+                ...monthFileNames,
+                ...monthFileNames.map(f => f.toLowerCase()),
+                ...monthFileNames.map(f => f.replace('.xlsx', '')),
+                ...monthFileNames.map(f => f.replace('.xlsx', '_data.xlsx')),
+                ...monthFileNames.map(f => f.replace('.xlsx', ' 2026.xlsx')),
+            ];
+
+            // Deduplicate
+            const uniquePatterns = [...new Set(patterns)];
+
+            let loadedCount = 0;
             const errors = [];
 
-            for (const file of excelFiles) {
+            // Show loading state
+            monthGrid.innerHTML = `
+                    <div class="loading-message">
+                        <i class="fas fa-spinner"></i>
+                        Loading Excel files from repository...
+                    </div>
+                `;
+
+            for (const fileName of uniquePatterns) {
                 try {
-                    const result = await processFileContent(file);
+                    // Try to fetch the file
+                    const response = await fetch(fileName);
+                    if (!response.ok) continue; // File not found, skip
+
+                    const fileData = new Uint8Array(await response.arrayBuffer());
+                    const result = await processFileData(fileData, fileName);
                     const { month, overallMap, uniqMap } = result;
-                    monthData[month] = { overallMap, uniqMap };
-                    successCount++;
+
+                    // Only add if we don't already have this month
+                    if (!monthData[month]) {
+                        monthData[month] = { overallMap, uniqMap };
+                        loadedCount++;
+                    }
                 } catch (err) {
-                    errors.push(`${file.name}: ${err.message}`);
+                    // Silently skip errors - we'll try other filenames
+                    continue;
                 }
             }
 
-            const loadedMonths = Object.keys(monthData);
-            loadedMonthsBadge.innerHTML = `<i class="fas fa-check-circle"></i> ${loadedMonths.length}`;
-            fileCount.textContent = successCount;
+            if (loadedCount === 0) {
+                // No files found, try one more time with a different approach
+                // Try to fetch a manifest or directory listing isn't possible, so we try a few more common names
+                const additionalPatterns = [
+                    'Jan.xlsx', 'Feb.xlsx', 'Mar.xlsx', 'Apr.xlsx',
+                    'May.xlsx', 'Jun.xlsx', 'Jul.xlsx', 'Aug.xlsx',
+                    'Sep.xlsx', 'Oct.xlsx', 'Nov.xlsx', 'Dec.xlsx',
+                    'JAN.xlsx', 'FEB.xlsx', 'MAR.xlsx', 'APR.xlsx',
+                    'MAY.xlsx', 'JUN.xlsx', 'JUL.xlsx', 'AUG.xlsx',
+                    'SEP.xlsx', 'OCT.xlsx', 'NOV.xlsx', 'DEC.xlsx'
+                ];
 
-            if (loadedMonths.length > 0) {
-                loadedMonths.sort((a, b) => getMonthNumber(a) - getMonthNumber(b));
-                activeMonth = loadedMonths[0];
-                buildGrid();
+                for (const fileName of additionalPatterns) {
+                    try {
+                        const response = await fetch(fileName);
+                        if (!response.ok) continue;
+                        const fileData = new Uint8Array(await response.arrayBuffer());
+                        const result = await processFileData(fileData, fileName);
+                        const { month, overallMap, uniqMap } = result;
+                        if (!monthData[month]) {
+                            monthData[month] = { overallMap, uniqMap };
+                            loadedCount++;
+                        }
+                    } catch (err) {
+                        continue;
+                    }
+                }
+            }
+
+            if (loadedCount > 0) {
+                // Success - hide the upload card and build the grid
                 uploadCard.classList.add('hidden');
+                folderHint.innerHTML = `<i class="fas fa-check-circle" style="color:#0b2b4a;"></i> Loaded ${loadedCount} month(s) from repository.`;
+                buildGrid();
             } else {
+                // No files found - show a helpful message with the Browse option
                 monthGrid.innerHTML = `
                         <div class="no-data-message">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            No months could be loaded. Check file names for month keywords.
+                            <i class="fas fa-file-excel"></i>
+                            No Excel files found in the repository.<br><br>
+                            <span style="font-size:0.7rem; opacity:0.7;">
+                                Make sure your monthly Excel files (e.g., January.xlsx, February.xlsx) are in the same folder as this HTML file.<br>
+                                <strong>Accepted formats:</strong> January.xlsx, Jan.xlsx, JAN.xlsx, January_data.xlsx, etc.
+                            </span>
                         </div>
                     `;
+                // Show the upload card as a fallback
+                uploadCard.classList.remove('hidden');
+                folderHint.innerHTML = `<i class="fas fa-info-circle"></i> No Excel files found. Click "Browse" to select files manually.`;
+                // Update header stats to show zero
                 totalOverall.textContent = '0';
                 totalUniq.textContent = '0';
                 totalPasses.textContent = '0.00';
                 rowCount.textContent = '0';
                 footerMonthTag.textContent = '—';
-                updateHeaderTitle(null);
-                return false;
+                loadedMonthsBadge.innerHTML = `<i class="fas fa-check-circle"></i> 0`;
+                fileCount.textContent = '0';
             }
-
-            if (errors.length > 0) {
-                showError('Some files had errors: ' + errors.join('; '));
-            } else if (successCount === 0) {
-                showError('No files were processed successfully. Check that each file contains "ALL" and "UNIQ" sheets with a "PLACEMENT" column.');
-                return false;
-            }
-            return true;
         }
 
-        // ─── Process a directory handle (File System Access API) ───────────
-        async function processDirectoryHandle(handle) {
-            const files = [];
-            try {
-                for await (const entry of handle.values()) {
-                    if (entry.kind === 'file' && (entry.name.endsWith('.xlsx') || entry.name.endsWith('.xls'))) {
-                        const file = await entry.getFile();
-                        files.push(file);
+        // ─── Manual file selection (fallback) ──────────────────────────────
+        function manualFileSelect() {
+            // Create a hidden file input that accepts multiple files
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.multiple = true;
+            fileInput.accept = '.xlsx,.xls';
+            fileInput.style.display = 'none';
+
+            fileInput.addEventListener('change', async function() {
+                const files = this.files;
+                if (files.length === 0) return;
+
+                // Clear existing data
+                for (const key in monthData) delete monthData[key];
+                activeMonth = null;
+
+                let loadedCount = 0;
+                for (const file of files) {
+                    try {
+                        const reader = new FileReader();
+                        const fileData = await new Promise((resolve, reject) => {
+                            reader.onload = (e) => resolve(new Uint8Array(e.target.result));
+                            reader.onerror = reject;
+                            reader.readAsArrayBuffer(file);
+                        });
+                        const result = await processFileData(fileData, file.name);
+                        const { month, overallMap, uniqMap } = result;
+                        if (!monthData[month]) {
+                            monthData[month] = { overallMap, uniqMap };
+                            loadedCount++;
+                        }
+                    } catch (err) {
+                        showError(`Error processing ${file.name}: ${err.message}`);
                     }
                 }
-            } catch (err) {
-                showError('Error reading directory: ' + err.message);
-                return false;
-            }
 
-            if (files.length === 0) {
-                showError('No Excel files found in the selected folder.');
-                return false;
-            }
-
-            return await processFolder(files);
-        }
-
-        // ─── Load folder using the modern File System Access API ────────────
-        async function loadFolderWithPicker() {
-            hideError();
-            if (!window.showDirectoryPicker) {
-                // Fallback to legacy file input
-                folderInput.click();
-                return;
-            }
-
-            try {
-                const handle = await window.showDirectoryPicker();
-                const permission = await handle.requestPermission({ mode: 'read' });
-                if (permission !== 'granted') {
-                    showError('Permission to read the folder was denied.');
-                    return;
-                }
-
-                // Save the handle for automatic loading next time
-                await saveFileHandle(handle);
-                const success = await processDirectoryHandle(handle);
-                if (success) {
-                    folderHint.innerHTML = `<i class="fas fa-check-circle" style="color:#0b2b4a;"></i> Folder loaded successfully. Data will load automatically on your next visit.`;
-                }
-            } catch (err) {
-                if (err.name !== 'AbortError' && err.name !== 'SecurityError') {
-                    showError('Error loading folder: ' + err.message);
-                }
-            }
-        }
-
-        // ─── Auto-load stored folder on page load ───────────────────────────
-        async function autoLoadStoredFolder() {
-            hideError();
-            try {
-                const handle = await getFileHandle();
-                if (!handle) {
-                    // No stored folder, show the upload card
-                    uploadCard.classList.remove('hidden');
-                    return;
-                }
-
-                // Verify permission
-                const permission = await handle.requestPermission({ mode: 'read' });
-                if (permission !== 'granted') {
-                    // Permission revoked, clear the stored handle and show upload
-                    await deleteFileHandle();
-                    uploadCard.classList.remove('hidden');
-                    folderHint.innerHTML = `<i class="fas fa-info-circle"></i> Permission was revoked. Please select your PASSES folder again.`;
-                    return;
-                }
-
-                // We have permission, load the data
-                const success = await processDirectoryHandle(handle);
-                if (success) {
+                if (loadedCount > 0) {
                     uploadCard.classList.add('hidden');
-                    folderHint.innerHTML = `<i class="fas fa-check-circle" style="color:#0b2b4a;"></i> Data loaded automatically.`;
-                } else {
-                    uploadCard.classList.remove('hidden');
+                    folderHint.innerHTML = `<i class="fas fa-check-circle" style="color:#0b2b4a;"></i> Loaded ${loadedCount} month(s) manually.`;
+                    buildGrid();
                 }
-            } catch (err) {
-                console.warn('Auto-load failed:', err);
-                uploadCard.classList.remove('hidden');
-            }
+                this.remove();
+            });
+
+            document.body.appendChild(fileInput);
+            fileInput.click();
         }
 
         // ─── Event Listeners ──────────────────────────────────────────────────
 
         loadBtn.addEventListener('click', function() {
-            loadFolderWithPicker();
-        });
-
-        // Legacy fallback for browsers without showDirectoryPicker
-        folderInput.addEventListener('change', function() {
-            hideError();
-            const files = this.files;
-            if (files.length === 0) return;
-            // For legacy, we can't save the handle, but we process the files
-            processFolder(files).then(success => {
-                if (success) {
-                    folderHint.innerHTML = `<i class="fas fa-check-circle" style="color:#0b2b4a;"></i> Files loaded. (Legacy mode)`;
-                    uploadCard.classList.add('hidden');
-                }
-            });
-            this.value = '';
+            manualFileSelect();
         });
 
         resetBtn.addEventListener('click', async function() {
-            // Clear stored handle
-            await deleteFileHandle();
-            folderInput.value = '';
             for (const key in monthData) delete monthData[key];
             activeMonth = null;
             loadedMonthsBadge.innerHTML = `<i class="fas fa-check-circle"></i> 0`;
             fileCount.textContent = '0';
             hideError();
             uploadCard.classList.remove('hidden');
-            folderHint.innerHTML = `<i class="fas fa-info-circle"></i> Select your <strong>PASSES</strong> folder. All monthly Excel files are processed automatically.`;
+            folderHint.innerHTML = `<i class="fas fa-info-circle"></i> Excel files are auto-loaded from the repository. Use the Browse button as a fallback.`;
             monthGrid.innerHTML = `
                     <div class="no-data-message">
                         <i class="fas fa-folder-open"></i>
-                        No months loaded. Click "Browse" to select your PASSES folder.
+                        No months loaded. Excel files will auto-load from the repository.
                     </div>
                 `;
             totalOverall.textContent = '0';
@@ -1306,13 +1255,16 @@
             rowCount.textContent = '0';
             footerMonthTag.textContent = '—';
             updateHeaderTitle(null);
+
+            // Attempt to reload from repository
+            setTimeout(fetchExcelFilesFromRepo, 300);
         });
 
         // ─── Initialise ──────────────────────────────────────────────────────
         monthGrid.innerHTML = `
-                <div class="no-data-message">
-                    <i class="fas fa-folder-open"></i>
-                    No months loaded. Click "Browse" to select your PASSES folder.
+                <div class="loading-message">
+                    <i class="fas fa-spinner"></i>
+                    Loading Excel files from repository...
                 </div>
             `;
         loadedMonthsBadge.innerHTML = `<i class="fas fa-check-circle"></i> 0`;
@@ -1320,8 +1272,7 @@
         updateHeaderTitle(null);
 
         // ─── Auto-load on startup ──────────────────────────────────────────
-        // Wait a tick for the DOM to fully settle
-        setTimeout(autoLoadStoredFolder, 100);
+        setTimeout(fetchExcelFilesFromRepo, 200);
     </script>
 </body>
 </html>
