@@ -1069,24 +1069,61 @@
         async function fetchExcelFilesFromRepo() {
             hideError();
 
-            // List of possible month filenames to try
-            const monthFileNames = [
-                'January.xlsx', 'February.xlsx', 'March.xlsx', 'April.xlsx',
-                'May.xlsx', 'June.xlsx', 'July.xlsx', 'August.xlsx',
-                'September.xlsx', 'October.xlsx', 'November.xlsx', 'December.xlsx'
+            // ─── ALL POSSIBLE FILENAME PATTERNS ──────────────────────────────
+            const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
             ];
 
-            // Also try lowercase and various common naming patterns
-            const patterns = [
-                ...monthFileNames,
-                ...monthFileNames.map(f => f.toLowerCase()),
-                ...monthFileNames.map(f => f.replace('.xlsx', '')),
-                ...monthFileNames.map(f => f.replace('.xlsx', '_data.xlsx')),
-                ...monthFileNames.map(f => f.replace('.xlsx', ' 2026.xlsx')),
-            ];
+            const monthAbbr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            // Build all possible filename variations
+            const allPatterns = [];
+
+            // Title case: January.xlsx
+            for (const m of monthNames) {
+                allPatterns.push(`${m}.xlsx`);
+            }
+
+            // Lowercase: january.xlsx
+            for (const m of monthNames) {
+                allPatterns.push(`${m.toLowerCase()}.xlsx`);
+            }
+
+            // UPPERCASE: JANUARY.xlsx  ← THIS IS THE FIX FOR YOUR FILES
+            for (const m of monthNames) {
+                allPatterns.push(`${m.toUpperCase()}.xlsx`);
+            }
+
+            // Abbreviations: Jan.xlsx, JAN.xlsx, jan.xlsx
+            for (const a of monthAbbr) {
+                allPatterns.push(`${a}.xlsx`);
+                allPatterns.push(`${a.toLowerCase()}.xlsx`);
+                allPatterns.push(`${a.toUpperCase()}.xlsx`);
+            }
+
+            // With underscores: January_data.xlsx, JANUARY_data.xlsx
+            for (const m of monthNames) {
+                allPatterns.push(`${m}_data.xlsx`);
+                allPatterns.push(`${m.toUpperCase()}_data.xlsx`);
+                allPatterns.push(`${m.toLowerCase()}_data.xlsx`);
+            }
+
+            // With year: January 2026.xlsx, JANUARY 2026.xlsx
+            for (const m of monthNames) {
+                allPatterns.push(`${m} 2026.xlsx`);
+                allPatterns.push(`${m.toUpperCase()} 2026.xlsx`);
+            }
+
+            // Without extension: January, JANUARY
+            for (const m of monthNames) {
+                allPatterns.push(m);
+                allPatterns.push(m.toUpperCase());
+                allPatterns.push(m.toLowerCase());
+            }
 
             // Deduplicate
-            const uniquePatterns = [...new Set(patterns)];
+            const uniquePatterns = [...new Set(allPatterns)];
 
             let loadedCount = 0;
             const errors = [];
@@ -1103,7 +1140,7 @@
                 try {
                     // Try to fetch the file
                     const response = await fetch(fileName);
-                    if (!response.ok) continue; // File not found, skip
+                    if (!response.ok) continue;
 
                     const fileData = new Uint8Array(await response.arrayBuffer());
                     const result = await processFileData(fileData, fileName);
@@ -1113,39 +1150,11 @@
                     if (!monthData[month]) {
                         monthData[month] = { overallMap, uniqMap };
                         loadedCount++;
+                        console.log(`✅ Loaded: ${month} from ${fileName}`);
                     }
                 } catch (err) {
-                    // Silently skip errors - we'll try other filenames
+                    // Silently skip errors
                     continue;
-                }
-            }
-
-            if (loadedCount === 0) {
-                // No files found, try one more time with a different approach
-                // Try to fetch a manifest or directory listing isn't possible, so we try a few more common names
-                const additionalPatterns = [
-                    'Jan.xlsx', 'Feb.xlsx', 'Mar.xlsx', 'Apr.xlsx',
-                    'May.xlsx', 'Jun.xlsx', 'Jul.xlsx', 'Aug.xlsx',
-                    'Sep.xlsx', 'Oct.xlsx', 'Nov.xlsx', 'Dec.xlsx',
-                    'JAN.xlsx', 'FEB.xlsx', 'MAR.xlsx', 'APR.xlsx',
-                    'MAY.xlsx', 'JUN.xlsx', 'JUL.xlsx', 'AUG.xlsx',
-                    'SEP.xlsx', 'OCT.xlsx', 'NOV.xlsx', 'DEC.xlsx'
-                ];
-
-                for (const fileName of additionalPatterns) {
-                    try {
-                        const response = await fetch(fileName);
-                        if (!response.ok) continue;
-                        const fileData = new Uint8Array(await response.arrayBuffer());
-                        const result = await processFileData(fileData, fileName);
-                        const { month, overallMap, uniqMap } = result;
-                        if (!monthData[month]) {
-                            monthData[month] = { overallMap, uniqMap };
-                            loadedCount++;
-                        }
-                    } catch (err) {
-                        continue;
-                    }
                 }
             }
 
@@ -1155,21 +1164,19 @@
                 folderHint.innerHTML = `<i class="fas fa-check-circle" style="color:#0b2b4a;"></i> Loaded ${loadedCount} month(s) from repository.`;
                 buildGrid();
             } else {
-                // No files found - show a helpful message with the Browse option
+                // No files found - show helpful message
                 monthGrid.innerHTML = `
                         <div class="no-data-message">
                             <i class="fas fa-file-excel"></i>
                             No Excel files found in the repository.<br><br>
                             <span style="font-size:0.7rem; opacity:0.7;">
-                                Make sure your monthly Excel files (e.g., January.xlsx, February.xlsx) are in the same folder as this HTML file.<br>
-                                <strong>Accepted formats:</strong> January.xlsx, Jan.xlsx, JAN.xlsx, January_data.xlsx, etc.
+                                Make sure your monthly Excel files (e.g., JANUARY.xlsx, FEBRUARY.xlsx) are in the same folder as this HTML file.<br>
+                                <strong>Supported formats:</strong> JANUARY.xlsx, January.xlsx, january.xlsx, JAN.xlsx, January_data.xlsx, etc.
                             </span>
                         </div>
                     `;
-                // Show the upload card as a fallback
                 uploadCard.classList.remove('hidden');
                 folderHint.innerHTML = `<i class="fas fa-info-circle"></i> No Excel files found. Click "Browse" to select files manually.`;
-                // Update header stats to show zero
                 totalOverall.textContent = '0';
                 totalUniq.textContent = '0';
                 totalPasses.textContent = '0.00';
@@ -1182,7 +1189,6 @@
 
         // ─── Manual file selection (fallback) ──────────────────────────────
         function manualFileSelect() {
-            // Create a hidden file input that accepts multiple files
             const fileInput = document.createElement('input');
             fileInput.type = 'file';
             fileInput.multiple = true;
@@ -1193,7 +1199,6 @@
                 const files = this.files;
                 if (files.length === 0) return;
 
-                // Clear existing data
                 for (const key in monthData) delete monthData[key];
                 activeMonth = null;
 
@@ -1244,9 +1249,9 @@
             uploadCard.classList.remove('hidden');
             folderHint.innerHTML = `<i class="fas fa-info-circle"></i> Excel files are auto-loaded from the repository. Use the Browse button as a fallback.`;
             monthGrid.innerHTML = `
-                    <div class="no-data-message">
-                        <i class="fas fa-folder-open"></i>
-                        No months loaded. Excel files will auto-load from the repository.
+                    <div class="loading-message">
+                        <i class="fas fa-spinner"></i>
+                        Loading Excel files from repository...
                     </div>
                 `;
             totalOverall.textContent = '0';
