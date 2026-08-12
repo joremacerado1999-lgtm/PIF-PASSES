@@ -120,7 +120,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
             position: relative;
         }
@@ -130,16 +130,16 @@
             background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            padding: 12px 20px;
+            padding: 10px 16px;
             border-radius: 14px;
             box-shadow: 0 2px 8px rgba(0, 20, 50, 0.08);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             border: 1px solid rgba(255, 255, 255, 0.5);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
         .header-left {
@@ -153,127 +153,122 @@
             background: #0b2b4a;
             color: white;
             font-weight: 700;
-            font-size: 1.1rem;
-            padding: 4px 16px;
+            font-size: 1rem;
+            padding: 4px 14px;
             border-radius: 30px;
             display: flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
         }
 
         .header-badge i {
             color: #7ab7ff;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
-        .subtitle {
+        .year-badge {
             background: rgba(233, 239, 246, 0.9);
-            padding: 3px 12px;
+            padding: 3px 10px;
             border-radius: 30px;
             font-weight: 500;
             color: #2c405c;
+            font-size: 0.7rem;
+            white-space: nowrap;
+        }
+
+        .month-select {
+            background: rgba(242, 247, 253, 0.9);
+            border: 1px solid #d0d9e6;
+            border-radius: 30px;
+            padding: 4px 14px;
             font-size: 0.75rem;
+            font-weight: 600;
+            color: #0b2b4a;
+            cursor: pointer;
+            font-family: inherit;
+            min-width: 130px;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%230b2b4a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 30px;
+            min-width: 110px;
+        }
+
+        .month-select:focus {
+            outline: none;
+            border-color: #0b2b4a;
+            box-shadow: 0 0 0 3px rgba(11, 43, 74, 0.15);
         }
 
         .header-right {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
             flex-wrap: wrap;
         }
 
         .stat-pill {
             background: rgba(238, 244, 250, 0.9);
-            padding: 3px 12px;
+            padding: 3px 10px;
             border-radius: 30px;
             font-weight: 500;
             color: #1a2b44;
             display: flex;
             align-items: center;
             gap: 4px;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
         }
 
         .stat-pill i {
             color: #2a6b9e;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
         }
 
         .stat-pill strong {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             color: #0b2b4a;
         }
 
         .info-badge {
             background: rgba(219, 234, 254, 0.9);
             color: #1e3a8a;
-            padding: 3px 10px;
+            padding: 2px 8px;
             border-radius: 30px;
             font-weight: 500;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             display: inline-flex;
             align-items: center;
             gap: 4px;
+            white-space: nowrap;
         }
 
-        /* ─── UPLOAD CARD ─── */
-        .upload-card {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            padding: 14px 18px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            transition: opacity 0.4s ease, max-height 0.4s ease, margin 0.4s ease, padding 0.4s ease;
-            overflow: hidden;
-            max-height: 300px;
-        }
-
-        .upload-card.hidden {
-            max-height: 0;
-            padding: 0 18px;
-            margin-bottom: 0;
-            opacity: 0;
-            pointer-events: none;
-            border-color: transparent;
-        }
-
-        .upload-card .title {
-            font-weight: 600;
-            margin-bottom: 6px;
-            font-size: 0.85rem;
-            color: #2c405c;
+        /* ─── ACTION BAR ─── */
+        .action-bar {
             display: flex;
             align-items: center;
-            gap: 6px;
-        }
-
-        .file-input-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            justify-content: flex-end;
+            gap: 8px;
             flex-wrap: wrap;
-        }
-
-        .file-input-wrapper input[type="file"] {
-            display: none;
         }
 
         .btn {
             background: white;
             border: 1px solid #d0d9e6;
-            padding: 5px 14px;
+            padding: 4px 12px;
             border-radius: 30px;
             font-weight: 600;
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: #1a2b44;
             cursor: pointer;
             transition: 0.2s;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
+            font-family: inherit;
+            white-space: nowrap;
         }
 
         .btn-primary {
@@ -290,385 +285,194 @@
             background: #eef4fa;
         }
 
-        .folder-hint {
-            font-size: 0.7rem;
-            color: rgba(74, 94, 122, 0.9);
-            margin-top: 4px;
-        }
-
-        .action-bar {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
         .alert {
-            padding: 6px 14px;
+            padding: 4px 12px;
             border-radius: 8px;
             background: #fef3c7;
             color: #92400e;
-            margin-top: 6px;
             border-left: 3px solid #f59e0b;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
+            width: 100%;
+            margin-top: 4px;
         }
 
         .hidden {
             display: none !important;
         }
 
-        /* ─── SIZE CONTROL ─── */
-        .size-control {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-
-        .size-control .label {
-            font-weight: 600;
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.9);
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-            margin-right: 4px;
-        }
-
-        .size-btn {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 3px 12px;
-            border-radius: 20px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            font-family: inherit;
-        }
-
-        .size-btn:hover {
-            background: rgba(255, 255, 255, 0.35);
-            color: #fff;
-        }
-
-        .size-btn.active {
-            background: rgba(255, 255, 255, 0.5);
-            border-color: rgba(255, 255, 255, 0.8);
-            color: #fff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* ─── MONTH GRID ─── */
-        .month-grid-section {
+        /* ─── DASHBOARD CARD ─── */
+        .dashboard-card-wrapper {
             margin-bottom: 16px;
         }
 
-        .month-grid-section .section-title {
-            font-weight: 600;
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.95);
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .month-grid {
-            display: grid;
-            gap: 10px;
-            transition: all 0.3s ease;
-        }
-
-        /* ─── SIZE: SMALL ─── */
-        .month-grid.size-small {
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 8px;
-        }
-        .month-grid.size-small .month-card {
-            padding: 6px 8px;
-        }
-        .month-grid.size-small .month-card .month-name {
-            font-size: 0.7rem;
-        }
-        .month-grid.size-small .month-card .mini-stats {
-            font-size: 0.5rem;
-            padding: 1px 4px;
-        }
-        .month-grid.size-small .month-card .card-details table {
-            font-size: 0.6rem;
-        }
-        .month-grid.size-small .month-card .card-details thead th,
-        .month-grid.size-small .month-card .card-details tbody td {
-            padding: 2px 4px;
-        }
-        .month-grid.size-small .month-card .card-details .total-row td {
-            padding: 2px 4px;
-        }
-        .month-grid.size-small .month-card .expand-icon {
-            font-size: 0.55rem;
-        }
-
-        /* ─── SIZE: MEDIUM (default) ─── */
-        .month-grid.size-medium {
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 10px;
-        }
-        .month-grid.size-medium .month-card {
-            padding: 8px 10px;
-        }
-        .month-grid.size-medium .month-card .month-name {
-            font-size: 0.85rem;
-        }
-        .month-grid.size-medium .month-card .mini-stats {
-            font-size: 0.6rem;
-            padding: 1px 6px;
-        }
-        .month-grid.size-medium .month-card .card-details table {
-            font-size: 0.75rem;
-        }
-        .month-grid.size-medium .month-card .card-details thead th,
-        .month-grid.size-medium .month-card .card-details tbody td {
-            padding: 4px 8px;
-        }
-        .month-grid.size-medium .month-card .card-details .total-row td {
-            padding: 4px 8px;
-        }
-        .month-grid.size-medium .month-card .expand-icon {
-            font-size: 0.65rem;
-        }
-
-        /* ─── SIZE: LARGE ─── */
-        .month-grid.size-large {
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 14px;
-        }
-        .month-grid.size-large .month-card {
-            padding: 12px 16px;
-        }
-        .month-grid.size-large .month-card .month-name {
-            font-size: 1.05rem;
-        }
-        .month-grid.size-large .month-card .mini-stats {
-            font-size: 0.75rem;
-            padding: 2px 10px;
-        }
-        .month-grid.size-large .month-card .card-details table {
-            font-size: 0.9rem;
-        }
-        .month-grid.size-large .month-card .card-details thead th,
-        .month-grid.size-large .month-card .card-details tbody td {
-            padding: 6px 12px;
-        }
-        .month-grid.size-large .month-card .card-details .total-row td {
-            padding: 6px 12px;
-        }
-        .month-grid.size-large .month-card .expand-icon {
-            font-size: 0.8rem;
-        }
-        .month-grid.size-large .month-card .month-number {
-            font-size: 0.65rem;
-            padding: 0px 8px;
-        }
-
-        /* ─── MONTH CARD ─── */
-        .month-card {
+        .dashboard-card {
             background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
             border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
             display: flex;
             flex-direction: column;
         }
 
-        .month-card:hover {
-            border-color: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 4px 16px rgba(0, 20, 50, 0.12);
-            transform: translateY(-2px);
-        }
-
-        .month-card.active {
-            border-color: #0b2b4a;
-            background: rgba(248, 250, 255, 0.95);
-            box-shadow: 0 4px 20px rgba(11, 43, 74, 0.15);
-            grid-column: 1 / -1;
-            z-index: 5;
-        }
-
-        /* When active, override size-specific padding */
-        .month-card.active {
-            padding: 10px 12px !important;
-        }
-        .month-grid.size-small .month-card.active {
-            padding: 10px 12px !important;
-        }
-        .month-grid.size-large .month-card.active {
-            padding: 14px 20px !important;
-        }
-
-        .month-card .card-header {
+        .dashboard-card .card-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 4px;
+            gap: 12px;
             width: 100%;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(11, 43, 74, 0.08);
+            flex-wrap: wrap;
         }
 
-        .month-card .month-name {
+        .dashboard-card .month-name {
             font-weight: 700;
+            font-size: 1.4rem;
             color: #0b2b4a;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
         }
 
-        .month-card .month-number {
+        .dashboard-card .month-number {
+            font-size: 0.7rem;
             font-weight: 600;
             color: #b0c4db;
             background: #eef4fa;
-            border-radius: 10px;
-            margin-left: 2px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-left: 6px;
         }
 
-        .month-card .mini-stats {
+        .dashboard-card .mini-stats {
             display: flex;
-            gap: 3px;
+            gap: 12px;
+            font-size: 0.8rem;
             color: #1a2b44;
             background: rgba(242, 247, 253, 0.9);
-            border-radius: 16px;
-            white-space: nowrap;
+            padding: 4px 14px;
+            border-radius: 30px;
         }
 
-        .month-card .mini-stats span {
+        .dashboard-card .mini-stats span {
             display: flex;
             align-items: center;
-            gap: 1px;
+            gap: 4px;
         }
 
-        .month-card .mini-stats .label {
+        .dashboard-card .mini-stats .label {
             color: #6a7e9a;
         }
 
-        .month-card .mini-stats .val {
-            font-weight: 600;
+        .dashboard-card .mini-stats .val {
+            font-weight: 700;
+            color: #0b2b4a;
         }
 
-        .month-card .expand-icon {
-            color: #8a9eb8;
-            transition: transform 0.25s;
-            margin-left: 2px;
-        }
-
-        .month-card.active .expand-icon {
-            transform: rotate(180deg);
-        }
-
-        /* ─── DETAIL TABLE INSIDE CARD ─── */
-        .month-card .card-details {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease, margin 0.25s ease;
-            margin-top: 0;
+        .dashboard-card .card-details {
+            margin-top: 16px;
             width: 100%;
+            overflow-x: auto;
         }
 
-        .month-card.active .card-details {
-            max-height: 500px;
-            margin-top: 8px;
-            overflow-y: auto;
-        }
-
-        .month-card .card-details table {
+        .dashboard-card .card-details table {
             width: 100%;
             border-collapse: collapse;
-            border-radius: 6px;
+            font-size: 0.85rem;
+            border-radius: 8px;
             overflow: hidden;
             border: 1px solid rgba(230, 237, 246, 0.6);
         }
 
-        .month-card .card-details thead {
+        .dashboard-card .card-details thead {
             background: rgba(233, 239, 246, 0.9);
         }
 
-        .month-card .card-details thead th {
+        .dashboard-card .card-details thead th {
             text-align: left;
-            font-weight: 600;
+            padding: 10px 14px;
+            font-weight: 700;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
             color: #3a506e;
-            border-bottom: 1px solid #d0d9e6;
+            border-bottom: 2px solid #d0d9e6;
         }
 
-        .month-card .card-details thead th:not(:first-child) {
+        .dashboard-card .card-details thead th:not(:first-child) {
             text-align: right;
         }
 
-        .month-card .card-details tbody td {
+        .dashboard-card .card-details tbody td {
+            padding: 8px 14px;
             border-bottom: 1px solid #edf2f8;
             color: #1a2b44;
         }
 
-        .month-card .card-details tbody td:not(:first-child) {
+        .dashboard-card .card-details tbody td:not(:first-child) {
             text-align: right;
+            font-weight: 500;
         }
 
-        .month-card .card-details tbody tr:hover {
+        .dashboard-card .card-details tbody tr:hover {
             background: #f7faff;
         }
 
-        .month-card .card-details tbody tr:last-child td {
+        .dashboard-card .card-details tbody tr:last-child td {
             border-bottom: none;
         }
 
-        .month-card .card-details .total-row {
+        .dashboard-card .card-details .total-row {
             background: rgba(242, 247, 253, 0.9);
             font-weight: 700;
         }
 
-        .month-card .card-details .total-row td {
+        .dashboard-card .card-details .total-row td {
             border-top: 2px solid #c8d6e8;
+            padding: 10px 14px;
+            font-weight: 700;
         }
 
-        .month-card .card-details .total-row td:not(:first-child) {
+        .dashboard-card .card-details .total-row td:not(:first-child) {
             text-align: right;
         }
 
-        .month-card .card-details .empty-msg {
-            padding: 10px;
+        .dashboard-card .card-details .empty-msg {
+            padding: 20px;
             text-align: center;
             color: #8a9eb8;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
         }
 
-        /* ─── SCROLLBAR ─── */
-        .month-card .card-details::-webkit-scrollbar {
-            width: 4px;
+        .placeholder-card {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.85);
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .month-card .card-details::-webkit-scrollbar-track {
-            background: #f0f4f9;
-            border-radius: 8px;
-        }
-
-        .month-card .card-details::-webkit-scrollbar-thumb {
-            background: #c8d6e8;
-            border-radius: 8px;
+        .placeholder-card i {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.6);
         }
 
         /* ─── FOOTER ─── */
         .footer {
             text-align: center;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: rgba(255, 255, 255, 0.85);
             text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            padding: 10px 0 4px 0;
+            padding: 8px 0 4px 0;
             border-top: 1px solid rgba(255, 255, 255, 0.15);
-            margin-top: 10px;
+            margin-top: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -686,69 +490,26 @@
             border-radius: 30px;
             font-weight: 600;
             color: #fff;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             text-transform: uppercase;
-        }
-
-        .no-data-message {
-            text-align: center;
-            padding: 16px;
-            color: rgba(255, 255, 255, 0.9);
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            font-size: 0.8rem;
-            grid-column: 1 / -1;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border-radius: 10px;
-        }
-
-        .no-data-message i {
-            font-size: 1.8rem;
-            display: block;
-            margin-bottom: 6px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .loading-message {
-            text-align: center;
-            padding: 20px;
-            color: rgba(255, 255, 255, 0.9);
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            grid-column: 1 / -1;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border-radius: 10px;
-        }
-
-        .loading-message i {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 8px;
-            color: rgba(255, 255, 255, 0.8);
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
 
         /* ─── RESPONSIVE ─── */
         @media (max-width: 600px) {
             body {
-                padding: 12px 10px;
+                padding: 12px 8px;
             }
 
             .header {
                 flex-direction: column;
                 align-items: stretch;
-                padding: 10px 14px;
+                padding: 10px 12px;
+                gap: 6px;
             }
 
             .header-left {
                 flex-wrap: wrap;
+                justify-content: flex-start;
             }
 
             .header-right {
@@ -756,47 +517,53 @@
             }
 
             .header-badge {
-                font-size: 0.95rem;
+                font-size: 0.85rem;
+                padding: 3px 10px;
+            }
+
+            .month-select {
+                font-size: 0.7rem;
+                min-width: 100px;
                 padding: 3px 12px;
+                padding-right: 26px;
             }
 
-            .month-grid {
-                gap: 6px;
+            .stat-pill {
+                font-size: 0.6rem;
+                padding: 2px 8px;
             }
-            .month-grid.size-small {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            }
-            .month-grid.size-medium {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            }
-            .month-grid.size-large {
-                grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-            }
-
-            .month-card {
-                padding: 6px 8px;
-            }
-            .month-card .month-name {
+            .stat-pill strong {
                 font-size: 0.75rem;
-            }
-            .month-card .mini-stats {
-                font-size: 0.55rem;
-                padding: 1px 4px;
-            }
-            .month-card.active {
-                padding: 8px 10px !important;
-            }
-            .month-card .card-details table {
-                font-size: 0.65rem;
-            }
-            .month-card .card-details thead th,
-            .month-card .card-details tbody td {
-                padding: 2px 6px;
             }
 
             .action-bar {
-                flex-direction: column;
-                align-items: stretch;
+                justify-content: flex-start;
+                width: 100%;
+            }
+
+            .btn {
+                font-size: 0.6rem;
+                padding: 3px 10px;
+            }
+
+            .dashboard-card {
+                padding: 12px 14px;
+            }
+            .dashboard-card .month-name {
+                font-size: 1.1rem;
+            }
+            .dashboard-card .mini-stats {
+                font-size: 0.65rem;
+                padding: 3px 10px;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+            .dashboard-card .card-details table {
+                font-size: 0.7rem;
+            }
+            .dashboard-card .card-details thead th,
+            .dashboard-card .card-details tbody td {
+                padding: 5px 6px;
             }
 
             .footer {
@@ -811,31 +578,16 @@
             .bg-circle {
                 display: none;
             }
-            #circle-small, #circle-medium {
+            #circle-small,
+            #circle-medium {
                 display: block;
-            }
-
-            .size-control .label {
-                font-size: 0.6rem;
-            }
-            .size-btn {
-                font-size: 0.55rem;
-                padding: 2px 10px;
             }
         }
 
         @media (min-width: 601px) and (max-width: 900px) {
-            .month-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            .month-card.active {
-                grid-column: 1 / -1;
-            }
-        }
-
-        @media (min-width: 901px) {
-            .month-card.active {
-                grid-column: 1 / -1;
+            .container {
+                max-width: 100%;
+                padding: 0 10px;
             }
         }
     </style>
@@ -863,7 +615,10 @@
                     <i class="fas fa-calendar-alt"></i>
                     <span id="headerMonthTitle">PIF PASSES</span>
                 </div>
-                <span class="subtitle"><i class="fas fa-th"></i> 2026</span>
+                <span class="year-badge"><i class="fas fa-th"></i> 2026</span>
+                <select id="monthSelect" class="month-select">
+                    <option value="">-- Loading --</option>
+                </select>
                 <span class="info-badge" id="loadedMonthsBadge"><i class="fas fa-check-circle"></i> 0</span>
             </div>
 
@@ -871,37 +626,21 @@
                 <span class="stat-pill"><i class="fas fa-database"></i> <strong id="totalOverall">0</strong></span>
                 <span class="stat-pill"><i class="fas fa-users"></i> <strong id="totalUniq">0</strong></span>
                 <span class="stat-pill"><i class="fas fa-arrow-right"></i> <strong id="totalPasses">0.00</strong></span>
-            </div>
-        </div>
-
-        <!-- ─── UPLOAD CARD ─── -->
-        <div class="upload-card" id="uploadCard">
-            <div class="title"><i class="fas fa-folder-tree"></i> Load Excel Files</div>
-            <div class="file-input-wrapper">
                 <div class="action-bar">
-                    <button class="btn btn-primary" id="loadBtn"><i class="fas fa-folder-open"></i> Browse (Fallback)</button>
+                    <button class="btn btn-primary" id="loadBtn"><i class="fas fa-folder-open"></i> Browse</button>
                     <button class="btn btn-outline" id="resetBtn"><i class="fas fa-undo-alt"></i> Reset</button>
                 </div>
             </div>
-            <div class="folder-hint" id="folderHint">
-                <i class="fas fa-info-circle"></i> Excel files are auto-loaded from the repository. Use the Browse button as a fallback.
-            </div>
+
             <div id="errorMsg" class="alert hidden"></div>
         </div>
 
-        <!-- ─── MONTH GRID ─── -->
-        <div class="month-grid-section">
-            <div class="section-title" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-                <span><i class="fas fa-calendar-alt"></i> Click a month to expand</span>
-                <div class="size-control">
-                    <span class="label">Size:</span>
-                    <button class="size-btn" data-size="small">Small</button>
-                    <button class="size-btn active" data-size="medium">Medium</button>
-                    <button class="size-btn" data-size="large">Large</button>
-                </div>
-            </div>
-            <div class="month-grid size-medium" id="monthGrid">
-                <!-- dynamically populated -->
+        <!-- ─── DASHBOARD CARD ─── -->
+        <div class="dashboard-card-wrapper" id="dashboardContainer">
+            <div class="placeholder-card">
+                <i class="fas fa-spinner fa-pulse"></i>
+                <p>Loading Excel files from repository...</p>
+                <span style="font-size:0.7rem; opacity:0.7;">Looking for JANUARY.xlsx, FEBRUARY.xlsx, etc.</span>
             </div>
         </div>
 
@@ -930,42 +669,9 @@
         const fileCount = document.getElementById('fileCount');
         const loadedMonthsBadge = document.getElementById('loadedMonthsBadge');
         const footerMonthTag = document.getElementById('footerMonthTag');
-        const monthGrid = document.getElementById('monthGrid');
         const headerMonthTitle = document.getElementById('headerMonthTitle');
-        const uploadCard = document.getElementById('uploadCard');
-        const folderHint = document.getElementById('folderHint');
-        const sizeBtns = document.querySelectorAll('.size-btn');
-
-        // ─── Size Control ─────────────────────────────────────────────────────
-        function setCardSize(size) {
-            // Remove all size classes
-            monthGrid.classList.remove('size-small', 'size-medium', 'size-large');
-            monthGrid.classList.add(`size-${size}`);
-
-            // Update button states
-            sizeBtns.forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.size === size);
-            });
-
-            // Save preference
-            localStorage.setItem('pif-card-size', size);
-        }
-
-        // Load saved size preference
-        function loadSizePreference() {
-            const saved = localStorage.getItem('pif-card-size');
-            if (saved && ['small', 'medium', 'large'].includes(saved)) {
-                setCardSize(saved);
-            } else {
-                setCardSize('medium');
-            }
-        }
-
-        sizeBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                setCardSize(this.dataset.size);
-            });
-        });
+        const dashboardContainer = document.getElementById('dashboardContainer');
+        const monthSelect = document.getElementById('monthSelect');
 
         // ─── Helpers ──────────────────────────────────────────────────────────
         function showError(text) {
@@ -1013,10 +719,17 @@
             }
         }
 
-        // ─── render a month card ─────────────────────────────────────────────
-        function renderMonthCard(month) {
+        // ─── Render Dashboard Card ──────────────────────────────────────────
+        function renderDashboardCard(month) {
             const data = monthData[month];
-            if (!data) return;
+            if (!data) {
+                return `
+                        <div class="placeholder-card">
+                            <i class="fas fa-file-excel"></i>
+                            <p>No data available for this month.</p>
+                        </div>
+                    `;
+            }
 
             const { overallMap, uniqMap } = data;
             const placements = new Set([...overallMap.keys(), ...uniqMap.keys()]);
@@ -1032,7 +745,7 @@
 
             let tableRows = '';
             if (sorted.length === 0) {
-                tableRows = `<tr><td colspan="4" class="empty-msg">No placements</td></tr>`;
+                tableRows = `<tr><td colspan="4" class="empty-msg">No placements found</td></tr>`;
             } else {
                 for (const p of sorted) {
                     const overall = overallMap.get(p) || 0;
@@ -1057,21 +770,18 @@
                     `;
             }
 
-            const isActive = activeMonth === month;
-
             return `
-                    <div class="month-card ${isActive ? 'active' : ''}" data-month="${month}" onclick="toggleMonth('${month}')">
+                    <div class="dashboard-card">
                         <div class="card-header">
                             <span class="month-name">
-                                ${getMonthAbbr(month)}
+                                ${month.toUpperCase()}
                                 <span class="month-number">${String(getMonthNumber(month)).padStart(2, '0')}</span>
                             </span>
                             <div class="mini-stats">
-                                <span><span class="label">O</span><span class="val">${totalOverallSum.toLocaleString()}</span></span>
-                                <span><span class="label">U</span><span class="val">${totalUniqSum.toLocaleString()}</span></span>
-                                <span><span class="label">P</span><span class="val">${totalPassesVal.toFixed(2)}</span></span>
+                                <span><span class="label">Overall</span> <span class="val">${totalOverallSum.toLocaleString()}</span></span>
+                                <span><span class="label">UNIQ</span> <span class="val">${totalUniqSum.toLocaleString()}</span></span>
+                                <span><span class="label">PASSES</span> <span class="val">${totalPassesVal.toFixed(2)}</span></span>
                             </div>
-                            <span class="expand-icon"><i class="fas fa-chevron-down"></i></span>
                         </div>
                         <div class="card-details">
                             <table>
@@ -1087,55 +797,53 @@
                 `;
         }
 
-        // ─── build the entire grid ───────────────────────────────────────────
-        function buildGrid() {
-            const loadedMonths = Object.keys(monthData);
-            if (loadedMonths.length === 0) {
-                monthGrid.innerHTML = `
-                        <div class="no-data-message">
-                            <i class="fas fa-folder-open"></i>
-                            No months loaded. Upload Excel files to the repository or use the Browse button.
+        // ─── Display selected month ─────────────────────────────────────────
+        function displayMonth(month) {
+            if (!month || !monthData[month]) {
+                dashboardContainer.innerHTML = `
+                        <div class="placeholder-card">
+                            <i class="fas fa-file-excel"></i>
+                            <p>Select a month from the dropdown to view data.</p>
                         </div>
                     `;
+                updateHeaderStats(null);
+                updateFooter(null);
                 updateHeaderTitle(null);
                 return;
             }
 
-            loadedMonths.sort((a, b) => getMonthNumber(a) - getMonthNumber(b));
+            activeMonth = month;
+            dashboardContainer.innerHTML = renderDashboardCard(month);
+            updateHeaderStats(month);
+            updateFooter(month);
+            updateHeaderTitle(month);
+            monthSelect.value = month;
+        }
 
-            let html = '';
-            for (const month of loadedMonths) {
-                html += renderMonthCard(month);
-            }
-            monthGrid.innerHTML = html;
+        // ─── Populate Dropdown ──────────────────────────────────────────────
+        function populateDropdown() {
+            const loadedMonths = Object.keys(monthData);
+            monthSelect.innerHTML = '<option value="">-- Select --</option>';
 
-            if (!activeMonth && loadedMonths.length > 0) {
-                activeMonth = loadedMonths[0];
-                buildGrid();
+            if (loadedMonths.length === 0) {
+                monthSelect.innerHTML = '<option value="">-- No months --</option>';
                 return;
             }
 
-            updateHeaderStats(activeMonth);
-            updateFooter(activeMonth);
-            updateHeaderTitle(activeMonth);
-        }
+            loadedMonths.sort((a, b) => getMonthNumber(a) - getMonthNumber(b));
+            for (const m of loadedMonths) {
+                const option = document.createElement('option');
+                option.value = m;
+                option.textContent = m;
+                monthSelect.appendChild(option);
+            }
 
-        // ─── toggle month expansion ──────────────────────────────────────────
-        window.toggleMonth = function(month) {
-            if (activeMonth === month) {
-                activeMonth = null;
-            } else {
-                activeMonth = month;
+            if (!activeMonth || !monthData[activeMonth]) {
+                activeMonth = loadedMonths[0];
             }
-            buildGrid();
-            updateHeaderTitle(activeMonth);
-            if (activeMonth) {
-                const activeCard = document.querySelector(`.month-card[data-month="${activeMonth}"]`);
-                if (activeCard) {
-                    activeCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }
-        };
+            monthSelect.value = activeMonth;
+            displayMonth(activeMonth);
+        }
 
         // ─── update header stats ─────────────────────────────────────────────
         function updateHeaderStats(month) {
@@ -1293,10 +1001,11 @@
             const uniquePatterns = [...new Set(allPatterns)];
             let loadedCount = 0;
 
-            monthGrid.innerHTML = `
-                    <div class="loading-message">
-                        <i class="fas fa-spinner"></i>
-                        Loading Excel files from repository...
+            dashboardContainer.innerHTML = `
+                    <div class="placeholder-card">
+                        <i class="fas fa-spinner fa-pulse"></i>
+                        <p>Loading Excel files from repository...</p>
+                        <span style="font-size:0.7rem; opacity:0.7;">Scanning for months (JANUARY.xlsx, FEBRUARY.xlsx, ...)</span>
                     </div>
                 `;
 
@@ -1312,6 +1021,7 @@
                     if (!monthData[month]) {
                         monthData[month] = { overallMap, uniqMap };
                         loadedCount++;
+                        console.log(`✅ Loaded: ${month} from ${fileName}`);
                     }
                 } catch (err) {
                     continue;
@@ -1319,22 +1029,24 @@
             }
 
             if (loadedCount > 0) {
-                uploadCard.classList.add('hidden');
-                folderHint.innerHTML = `<i class="fas fa-check-circle" style="color:#0b2b4a;"></i> Loaded ${loadedCount} month(s) from repository.`;
-                buildGrid();
+                populateDropdown();
+                if (activeMonth && monthData[activeMonth]) {
+                    displayMonth(activeMonth);
+                } else {
+                    const firstMonth = Object.keys(monthData).sort((a, b) => getMonthNumber(a) - getMonthNumber(b))[0];
+                    displayMonth(firstMonth);
+                }
             } else {
-                monthGrid.innerHTML = `
-                        <div class="no-data-message">
+                dashboardContainer.innerHTML = `
+                        <div class="placeholder-card">
                             <i class="fas fa-file-excel"></i>
-                            No Excel files found in the repository.<br><br>
+                            <p>No Excel files found in the repository.</p>
                             <span style="font-size:0.7rem; opacity:0.7;">
-                                Make sure your monthly Excel files (e.g., JANUARY.xlsx, FEBRUARY.xlsx) are in the same folder as this HTML file.<br>
-                                <strong>Supported formats:</strong> JANUARY.xlsx, January.xlsx, january.xlsx, JAN.xlsx, January_data.xlsx, etc.
+                                Make sure your monthly Excel files (e.g., JANUARY.xlsx, FEBRUARY.xlsx) are in the same folder.<br>
+                                <strong>Supported:</strong> JANUARY.xlsx, January.xlsx, january.xlsx, JAN.xlsx, etc.
                             </span>
                         </div>
                     `;
-                uploadCard.classList.remove('hidden');
-                folderHint.innerHTML = `<i class="fas fa-info-circle"></i> No Excel files found. Click "Browse" to select files manually.`;
                 totalOverall.textContent = '0';
                 totalUniq.textContent = '0';
                 totalPasses.textContent = '0.00';
@@ -1342,6 +1054,12 @@
                 footerMonthTag.textContent = '—';
                 loadedMonthsBadge.innerHTML = `<i class="fas fa-check-circle"></i> 0`;
                 fileCount.textContent = '0';
+                monthSelect.innerHTML = '<option value="">-- No months --</option>';
+                updateHeaderTitle(null);
+            }
+
+            if (loadedCount === 0) {
+                showError('No Excel files found. Please upload files or use the Browse button.');
             }
         }
 
@@ -1381,9 +1099,16 @@
                 }
 
                 if (loadedCount > 0) {
-                    uploadCard.classList.add('hidden');
-                    folderHint.innerHTML = `<i class="fas fa-check-circle" style="color:#0b2b4a;"></i> Loaded ${loadedCount} month(s) manually.`;
-                    buildGrid();
+                    populateDropdown();
+                    const firstMonth = Object.keys(monthData).sort((a, b) => getMonthNumber(a) - getMonthNumber(b))[0];
+                    displayMonth(firstMonth);
+                } else {
+                    dashboardContainer.innerHTML = `
+                            <div class="placeholder-card">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <p>No valid months loaded. Please check file names and content.</p>
+                            </div>
+                        `;
                 }
                 this.remove();
             });
@@ -1398,18 +1123,33 @@
             manualFileSelect();
         });
 
+        monthSelect.addEventListener('change', function() {
+            const month = this.value;
+            if (month && monthData[month]) {
+                displayMonth(month);
+            } else {
+                dashboardContainer.innerHTML = `
+                        <div class="placeholder-card">
+                            <i class="fas fa-file-excel"></i>
+                            <p>Select a month from the dropdown to view data.</p>
+                        </div>
+                    `;
+                updateHeaderStats(null);
+                updateFooter(null);
+                updateHeaderTitle(null);
+            }
+        });
+
         resetBtn.addEventListener('click', async function() {
             for (const key in monthData) delete monthData[key];
             activeMonth = null;
             loadedMonthsBadge.innerHTML = `<i class="fas fa-check-circle"></i> 0`;
             fileCount.textContent = '0';
             hideError();
-            uploadCard.classList.remove('hidden');
-            folderHint.innerHTML = `<i class="fas fa-info-circle"></i> Excel files are auto-loaded from the repository. Use the Browse button as a fallback.`;
-            monthGrid.innerHTML = `
-                    <div class="loading-message">
-                        <i class="fas fa-spinner"></i>
-                        Loading Excel files from repository...
+            dashboardContainer.innerHTML = `
+                    <div class="placeholder-card">
+                        <i class="fas fa-spinner fa-pulse"></i>
+                        <p>Loading Excel files from repository...</p>
                     </div>
                 `;
             totalOverall.textContent = '0';
@@ -1418,22 +1158,23 @@
             rowCount.textContent = '0';
             footerMonthTag.textContent = '—';
             updateHeaderTitle(null);
+            monthSelect.innerHTML = '<option value="">-- Loading --</option>';
 
             setTimeout(fetchExcelFilesFromRepo, 300);
         });
 
         // ─── Initialise ──────────────────────────────────────────────────────
-        loadSizePreference();
-
-        monthGrid.innerHTML = `
-                <div class="loading-message">
-                    <i class="fas fa-spinner"></i>
-                    Loading Excel files from repository...
+        dashboardContainer.innerHTML = `
+                <div class="placeholder-card">
+                    <i class="fas fa-spinner fa-pulse"></i>
+                    <p>Loading Excel files from repository...</p>
+                    <span style="font-size:0.7rem; opacity:0.7;">Looking for JANUARY.xlsx, FEBRUARY.xlsx, etc.</span>
                 </div>
             `;
         loadedMonthsBadge.innerHTML = `<i class="fas fa-check-circle"></i> 0`;
         footerMonthTag.textContent = '—';
         updateHeaderTitle(null);
+        monthSelect.innerHTML = '<option value="">-- Loading --</option>';
 
         setTimeout(fetchExcelFilesFromRepo, 200);
     </script>
