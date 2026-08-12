@@ -206,33 +206,31 @@
             box-shadow: 0 0 0 3px rgba(11, 43, 74, 0.15);
         }
 
+        .info-btn {
+            background: rgba(11, 43, 74, 0.08);
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0b2b4a;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.8rem;
+        }
+
+        .info-btn:hover {
+            background: rgba(11, 43, 74, 0.2);
+            transform: scale(1.05);
+        }
+
         .header-right {
             display: flex;
             gap: 8px;
             align-items: center;
             flex-wrap: wrap;
-        }
-
-        .stat-pill {
-            background: rgba(238, 244, 250, 0.9);
-            padding: 3px 10px;
-            border-radius: 30px;
-            font-weight: 500;
-            color: #1a2b44;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.7rem;
-        }
-
-        .stat-pill i {
-            color: #2a6b9e;
-            font-size: 0.6rem;
-        }
-
-        .stat-pill strong {
-            font-size: 0.85rem;
-            color: #0b2b4a;
         }
 
         .info-badge {
@@ -295,15 +293,6 @@
         }
         .btn-success:hover {
             background: #0f9a4e;
-        }
-
-        .btn-danger {
-            background: #b91c1c;
-            border-color: #b91c1c;
-            color: white;
-        }
-        .btn-danger:hover {
-            background: #dc2626;
         }
 
         .alert {
@@ -492,6 +481,96 @@
             color: #7ab7ff;
         }
 
+        /* ─── INFO MODAL ─── */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #eef4fa;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0b2b4a;
+        }
+
+        .modal-title i {
+            color: #2a6b9e;
+            margin-right: 8px;
+        }
+
+        .modal-close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #8a9eb8;
+            transition: color 0.2s;
+            line-height: 1;
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+
+        .modal-close:hover {
+            color: #1a2639;
+        }
+
+        .modal-body p {
+            font-size: 0.9rem;
+            color: #1a2b44;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f4f9;
+        }
+
+        .modal-body p:last-child {
+            border-bottom: none;
+        }
+
+        .modal-body .highlight {
+            background: rgba(11, 43, 74, 0.06);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #0b2b4a;
+        }
+
         /* ─── RESPONSIVE ─── */
         @media (max-width: 600px) {
             body {
@@ -524,14 +603,6 @@
                 min-width: 100px;
                 padding: 3px 12px;
                 padding-right: 26px;
-            }
-
-            .stat-pill {
-                font-size: 0.6rem;
-                padding: 2px 8px;
-            }
-            .stat-pill strong {
-                font-size: 0.75rem;
             }
 
             .action-bar {
@@ -575,6 +646,11 @@
                 padding: 8px 16px;
                 bottom: 20px;
             }
+
+            .modal-content {
+                padding: 18px;
+                margin: 10px;
+            }
         }
 
         @media (min-width: 601px) and (max-width: 900px) {
@@ -586,6 +662,22 @@
     </style>
 </head>
 <body>
+
+    <!-- ─── INFO MODAL ─── -->
+    <div id="infoModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title"><i class="fas fa-info-circle"></i> How PIF PASSES Works</span>
+                <button class="modal-close" id="closeInfoModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Source:</strong> Field Results per month</p>
+                <p><strong>OVERALL:</strong> Count of all <span class="highlight">VISITED</span> records <span style="color:#6a7e9a;font-size:0.8rem;">(CANCEL results excluded)</span></p>
+                <p><strong>UNIQ:</strong> Removes duplicates of <span class="highlight">CHCODE + MONTH</span> of visit</p>
+                <p><strong>PASSES:</strong> <span class="highlight">OVERALL ÷ UNIQ</span></p>
+            </div>
+        </div>
+    </div>
 
     <!-- ─── TOAST ─── -->
     <div id="toast" class="toast"></div>
@@ -616,13 +708,12 @@
                     <option value="">-- Loading --</option>
                 </select>
                 <span class="info-badge" id="loadedMonthsBadge"><i class="fas fa-check-circle"></i> 0</span>
+                <button class="info-btn" id="infoBtn" title="How it works"><i class="fas fa-info-circle"></i></button>
             </div>
 
             <div class="header-right">
-                <span class="stat-pill"><i class="fas fa-database"></i> <strong id="totalOverall">0</strong></span>
-                <span class="stat-pill"><i class="fas fa-users"></i> <strong id="totalUniq">0</strong></span>
-                <span class="stat-pill"><i class="fas fa-arrow-right"></i> <strong id="totalPasses">0.00</strong></span>
                 <div class="action-bar">
+                    <button class="btn btn-primary" id="loadBtn"><i class="fas fa-folder-open"></i> Browse</button>
                     <button class="btn btn-success" id="downloadBtn" title="Download current month Excel file"><i class="fas fa-download"></i> Download</button>
                     <button class="btn btn-primary" id="screenshotBtn" title="Save dashboard as image"><i class="fas fa-camera"></i> Screenshot</button>
                     <button class="btn btn-outline" id="resetBtn"><i class="fas fa-undo-alt"></i> Reset</button>
@@ -649,13 +740,14 @@
         let activeMonth = null;
 
         // ─── DOM refs ──────────────────────────────────────────────────────────
+        const loadBtn = document.getElementById('loadBtn');
         const resetBtn = document.getElementById('resetBtn');
         const downloadBtn = document.getElementById('downloadBtn');
         const screenshotBtn = document.getElementById('screenshotBtn');
+        const infoBtn = document.getElementById('infoBtn');
+        const infoModal = document.getElementById('infoModal');
+        const closeInfoModal = document.getElementById('closeInfoModal');
         const errorMsg = document.getElementById('errorMsg');
-        const totalOverall = document.getElementById('totalOverall');
-        const totalUniq = document.getElementById('totalUniq');
-        const totalPasses = document.getElementById('totalPasses');
         const loadedMonthsBadge = document.getElementById('loadedMonthsBadge');
         const headerMonthTitle = document.getElementById('headerMonthTitle');
         const dashboardContainer = document.getElementById('dashboardContainer');
@@ -675,6 +767,21 @@
                 toast.className = 'toast';
             }, 3500);
         }
+
+        // ─── Info Modal ──────────────────────────────────────────────────────
+        infoBtn.addEventListener('click', () => {
+            infoModal.classList.remove('hidden');
+        });
+
+        closeInfoModal.addEventListener('click', () => {
+            infoModal.classList.add('hidden');
+        });
+
+        infoModal.addEventListener('click', (e) => {
+            if (e.target === infoModal) {
+                infoModal.classList.add('hidden');
+            }
+        });
 
         // ─── Helpers ──────────────────────────────────────────────────────────
         function showError(text) {
@@ -812,14 +919,12 @@
                             <p>Select a month from the dropdown to view data.</p>
                         </div>
                     `;
-                updateHeaderStats(null);
                 updateHeaderTitle(null);
                 return;
             }
 
             activeMonth = month;
             dashboardContainer.innerHTML = renderDashboardCard(month);
-            updateHeaderStats(month);
             updateHeaderTitle(month);
             monthSelect.value = month;
         }
@@ -870,31 +975,6 @@
                 monthSelect.value = firstMonth;
                 displayMonth(firstMonth);
             }
-        }
-
-        // ─── update header stats ─────────────────────────────────────────────
-        function updateHeaderStats(month) {
-            if (!month || !monthData[month]) {
-                totalOverall.textContent = '0';
-                totalUniq.textContent = '0';
-                totalPasses.textContent = '0.00';
-                return;
-            }
-
-            const data = monthData[month];
-            const { overallMap, uniqMap } = data;
-            const placements = new Set([...overallMap.keys(), ...uniqMap.keys()]);
-            let totalOverallSum = 0,
-                totalUniqSum = 0;
-            for (const p of placements) {
-                totalOverallSum += overallMap.get(p) || 0;
-                totalUniqSum += uniqMap.get(p) || 0;
-            }
-            const totalPassesVal = totalUniqSum > 0 ? totalOverallSum / totalUniqSum : 0;
-
-            totalOverall.textContent = totalOverallSum.toLocaleString();
-            totalUniq.textContent = totalUniqSum.toLocaleString();
-            totalPasses.textContent = totalPassesVal.toFixed(2);
         }
 
         function updateLoadedBadge() {
@@ -1051,9 +1131,6 @@
                             </span>
                         </div>
                     `;
-                totalOverall.textContent = '0';
-                totalUniq.textContent = '0';
-                totalPasses.textContent = '0.00';
                 loadedMonthsBadge.innerHTML = `<i class="fas fa-check-circle"></i> 0`;
                 monthSelect.innerHTML = '<option value="">-- No months --</option>';
                 updateHeaderTitle(null);
@@ -1110,9 +1187,6 @@
                                 <p>No valid months loaded. Please check file names and content.</p>
                             </div>
                         `;
-                    totalOverall.textContent = '0';
-                    totalUniq.textContent = '0';
-                    totalPasses.textContent = '0.00';
                     loadedMonthsBadge.innerHTML = `<i class="fas fa-check-circle"></i> 0`;
                     updateHeaderTitle(null);
                 }
@@ -1161,7 +1235,6 @@
             }
 
             const monthName = activeMonth;
-            // Try different filename variations
             const fileNames = [
                 `${monthName.toUpperCase()}.xlsx`,
                 `${monthName}.xlsx`,
@@ -1170,11 +1243,7 @@
                 `${monthName.toUpperCase()}_data.xlsx`,
             ];
 
-            // Use a unique set
             const uniqueFileNames = [...new Set(fileNames)];
-
-            // Try to fetch the file
-            let fetchAttempted = false;
 
             async function attemptDownload() {
                 for (const fileName of uniqueFileNames) {
@@ -1198,7 +1267,6 @@
                     }
                 }
 
-                // If we get here, no file was found
                 showToast(`Could not find Excel file for ${monthName}. Make sure it's in the repository.`, 'error');
             }
 
@@ -1207,18 +1275,7 @@
 
         // ─── Event Listeners ──────────────────────────────────────────────────
 
-        // Browse button - manual file selection
-        const loadBtn = document.getElementById('loadBtn');
-        if (loadBtn) {
-            loadBtn.addEventListener('click', manualFileSelect);
-        } else {
-            // Create the browse button if it doesn't exist (it should, but just in case)
-            const browseBtn = document.createElement('button');
-            browseBtn.className = 'btn btn-primary';
-            browseBtn.innerHTML = '<i class="fas fa-folder-open"></i> Browse';
-            browseBtn.addEventListener('click', manualFileSelect);
-            document.querySelector('.action-bar').prepend(browseBtn);
-        }
+        loadBtn.addEventListener('click', manualFileSelect);
 
         monthSelect.addEventListener('change', function() {
             const month = this.value;
@@ -1231,7 +1288,6 @@
                             <p>Select a month from the dropdown to view data.</p>
                         </div>
                     `;
-                updateHeaderStats(null);
                 updateHeaderTitle(null);
             }
         });
@@ -1247,9 +1303,6 @@
                         <p>Loading Excel files from repository...</p>
                     </div>
                 `;
-            totalOverall.textContent = '0';
-            totalUniq.textContent = '0';
-            totalPasses.textContent = '0.00';
             updateHeaderTitle(null);
             monthSelect.innerHTML = '<option value="">-- Loading --</option>';
 
