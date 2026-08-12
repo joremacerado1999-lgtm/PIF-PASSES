@@ -7,6 +7,9 @@
     <!-- SheetJS library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
     </script>
+    <!-- html2canvas for screenshot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     
     <!-- ─── Favicon ─── -->
@@ -133,7 +136,7 @@
             padding: 10px 16px;
             border-radius: 14px;
             box-shadow: 0 2px 8px rgba(0, 20, 50, 0.08);
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             border: 1px solid rgba(255, 255, 255, 0.5);
             display: flex;
             align-items: center;
@@ -250,7 +253,7 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
         }
 
@@ -283,6 +286,24 @@
 
         .btn-outline:hover {
             background: #eef4fa;
+        }
+
+        .btn-success {
+            background: #0d7c3f;
+            border-color: #0d7c3f;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #0f9a4e;
+        }
+
+        .btn-danger {
+            background: #b91c1c;
+            border-color: #b91c1c;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
         }
 
         .alert {
@@ -343,31 +364,6 @@
             padding: 2px 10px;
             border-radius: 20px;
             margin-left: 6px;
-        }
-
-        .dashboard-card .mini-stats {
-            display: flex;
-            gap: 12px;
-            font-size: 0.8rem;
-            color: #1a2b44;
-            background: rgba(242, 247, 253, 0.9);
-            padding: 4px 14px;
-            border-radius: 30px;
-        }
-
-        .dashboard-card .mini-stats span {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .dashboard-card .mini-stats .label {
-            color: #6a7e9a;
-        }
-
-        .dashboard-card .mini-stats .val {
-            font-weight: 700;
-            color: #0b2b4a;
         }
 
         .dashboard-card .card-details {
@@ -464,34 +460,36 @@
             color: rgba(255, 255, 255, 0.6);
         }
 
-        /* ─── FOOTER ─── */
-        .footer {
+        /* ─── TOAST NOTIFICATION ─── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(11, 43, 74, 0.95);
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
             text-align: center;
-            font-size: 0.65rem;
-            color: rgba(255, 255, 255, 0.85);
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            padding: 8px 0 4px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
         }
 
-        .footer i {
-            color: rgba(255, 255, 255, 0.7);
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
 
-        .footer .month-tag {
-            background: rgba(238, 244, 250, 0.25);
-            padding: 1px 8px;
-            border-radius: 30px;
-            font-weight: 600;
-            color: #fff;
-            font-size: 0.6rem;
-            text-transform: uppercase;
+        .toast i {
+            margin-right: 8px;
+            color: #7ab7ff;
         }
 
         /* ─── RESPONSIVE ─── */
@@ -542,8 +540,8 @@
             }
 
             .btn {
-                font-size: 0.6rem;
-                padding: 3px 10px;
+                font-size: 0.55rem;
+                padding: 3px 8px;
             }
 
             .dashboard-card {
@@ -552,23 +550,12 @@
             .dashboard-card .month-name {
                 font-size: 1.1rem;
             }
-            .dashboard-card .mini-stats {
-                font-size: 0.65rem;
-                padding: 3px 10px;
-                gap: 8px;
-                flex-wrap: wrap;
-            }
             .dashboard-card .card-details table {
                 font-size: 0.7rem;
             }
             .dashboard-card .card-details thead th,
             .dashboard-card .card-details tbody td {
                 padding: 5px 6px;
-            }
-
-            .footer {
-                flex-direction: column;
-                gap: 3px;
             }
 
             #bg-container-inside {
@@ -582,6 +569,12 @@
             #circle-medium {
                 display: block;
             }
+
+            .toast {
+                font-size: 0.7rem;
+                padding: 8px 16px;
+                bottom: 20px;
+            }
         }
 
         @media (min-width: 601px) and (max-width: 900px) {
@@ -593,6 +586,9 @@
     </style>
 </head>
 <body>
+
+    <!-- ─── TOAST ─── -->
+    <div id="toast" class="toast"></div>
 
     <!-- ─── ANIMATED BACKGROUND ─── -->
     <div id="bg-container">
@@ -627,7 +623,8 @@
                 <span class="stat-pill"><i class="fas fa-users"></i> <strong id="totalUniq">0</strong></span>
                 <span class="stat-pill"><i class="fas fa-arrow-right"></i> <strong id="totalPasses">0.00</strong></span>
                 <div class="action-bar">
-                    <button class="btn btn-primary" id="loadBtn"><i class="fas fa-folder-open"></i> Browse</button>
+                    <button class="btn btn-success" id="downloadBtn" title="Download current month Excel file"><i class="fas fa-download"></i> Download</button>
+                    <button class="btn btn-primary" id="screenshotBtn" title="Save dashboard as image"><i class="fas fa-camera"></i> Screenshot</button>
                     <button class="btn btn-outline" id="resetBtn"><i class="fas fa-undo-alt"></i> Reset</button>
                 </div>
             </div>
@@ -644,13 +641,6 @@
             </div>
         </div>
 
-        <!-- ─── FOOTER ─── -->
-        <div class="footer">
-            <span><i class="fas fa-file-excel"></i> <span id="fileCount">0</span> files</span>
-            <span class="month-tag" id="footerMonthTag">—</span>
-            <span><span id="rowCount">0</span> records</span>
-        </div>
-
     </div>
 
     <script>
@@ -659,19 +649,32 @@
         let activeMonth = null;
 
         // ─── DOM refs ──────────────────────────────────────────────────────────
-        const loadBtn = document.getElementById('loadBtn');
         const resetBtn = document.getElementById('resetBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const screenshotBtn = document.getElementById('screenshotBtn');
         const errorMsg = document.getElementById('errorMsg');
         const totalOverall = document.getElementById('totalOverall');
         const totalUniq = document.getElementById('totalUniq');
         const totalPasses = document.getElementById('totalPasses');
-        const rowCount = document.getElementById('rowCount');
-        const fileCount = document.getElementById('fileCount');
         const loadedMonthsBadge = document.getElementById('loadedMonthsBadge');
-        const footerMonthTag = document.getElementById('footerMonthTag');
         const headerMonthTitle = document.getElementById('headerMonthTitle');
         const dashboardContainer = document.getElementById('dashboardContainer');
         const monthSelect = document.getElementById('monthSelect');
+        const toast = document.getElementById('toast');
+
+        let toastTimeout = null;
+
+        // ─── Toast notification ──────────────────────────────────────────────
+        function showToast(message, type = 'info') {
+            const icon = type === 'success' ? 'fa-check-circle' :
+                type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+            toast.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+            toast.className = 'toast show';
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.className = 'toast';
+            }, 3500);
+        }
 
         // ─── Helpers ──────────────────────────────────────────────────────────
         function showError(text) {
@@ -706,8 +709,16 @@
             return months.indexOf(month) + 1;
         }
 
-        function getMonthAbbr(month) {
-            return month.substring(0, 3).toUpperCase();
+        // ─── Get current month ───────────────────────────────────────────────
+        function getCurrentMonthIndex() {
+            return new Date().getMonth();
+        }
+
+        function getMonthNameFromIndex(index) {
+            const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            return months[index];
         }
 
         // ─── Update Header Title ─────────────────────────────────────────────
@@ -771,17 +782,12 @@
             }
 
             return `
-                    <div class="dashboard-card">
+                    <div class="dashboard-card" id="dashboardCard">
                         <div class="card-header">
                             <span class="month-name">
                                 ${month.toUpperCase()}
                                 <span class="month-number">${String(getMonthNumber(month)).padStart(2, '0')}</span>
                             </span>
-                            <div class="mini-stats">
-                                <span><span class="label">Overall</span> <span class="val">${totalOverallSum.toLocaleString()}</span></span>
-                                <span><span class="label">UNIQ</span> <span class="val">${totalUniqSum.toLocaleString()}</span></span>
-                                <span><span class="label">PASSES</span> <span class="val">${totalPassesVal.toFixed(2)}</span></span>
-                            </div>
                         </div>
                         <div class="card-details">
                             <table>
@@ -807,7 +813,6 @@
                         </div>
                     `;
                 updateHeaderStats(null);
-                updateFooter(null);
                 updateHeaderTitle(null);
                 return;
             }
@@ -815,12 +820,11 @@
             activeMonth = month;
             dashboardContainer.innerHTML = renderDashboardCard(month);
             updateHeaderStats(month);
-            updateFooter(month);
             updateHeaderTitle(month);
             monthSelect.value = month;
         }
 
-        // ─── Populate Dropdown ──────────────────────────────────────────────
+        // ─── Populate Dropdown & Auto-select ────────────────────────────────
         function populateDropdown() {
             const loadedMonths = Object.keys(monthData);
             monthSelect.innerHTML = '<option value="">-- Select --</option>';
@@ -838,11 +842,34 @@
                 monthSelect.appendChild(option);
             }
 
-            if (!activeMonth || !monthData[activeMonth]) {
-                activeMonth = loadedMonths[0];
+            // Auto-select: current month if available, else most recent past month
+            const currentMonthIndex = getCurrentMonthIndex();
+            const currentMonthName = getMonthNameFromIndex(currentMonthIndex);
+            let selectedMonth = null;
+
+            if (monthData[currentMonthName]) {
+                selectedMonth = currentMonthName;
+            } else {
+                for (let i = currentMonthIndex - 1; i >= 0; i--) {
+                    const monthName = getMonthNameFromIndex(i);
+                    if (monthData[monthName]) {
+                        selectedMonth = monthName;
+                        break;
+                    }
+                }
+                if (!selectedMonth && loadedMonths.length > 0) {
+                    selectedMonth = loadedMonths[0];
+                }
             }
-            monthSelect.value = activeMonth;
-            displayMonth(activeMonth);
+
+            if (selectedMonth) {
+                monthSelect.value = selectedMonth;
+                displayMonth(selectedMonth);
+            } else if (loadedMonths.length > 0) {
+                const firstMonth = loadedMonths[0];
+                monthSelect.value = firstMonth;
+                displayMonth(firstMonth);
+            }
         }
 
         // ─── update header stats ─────────────────────────────────────────────
@@ -851,8 +878,6 @@
                 totalOverall.textContent = '0';
                 totalUniq.textContent = '0';
                 totalPasses.textContent = '0.00';
-                rowCount.textContent = '0';
-                footerMonthTag.textContent = '—';
                 return;
             }
 
@@ -870,19 +895,11 @@
             totalOverall.textContent = totalOverallSum.toLocaleString();
             totalUniq.textContent = totalUniqSum.toLocaleString();
             totalPasses.textContent = totalPassesVal.toFixed(2);
-            rowCount.textContent = totalOverallSum.toLocaleString();
-            footerMonthTag.textContent = month.toUpperCase();
         }
 
-        function updateFooter(month) {
+        function updateLoadedBadge() {
             const loaded = Object.keys(monthData).length;
             loadedMonthsBadge.innerHTML = `<i class="fas fa-check-circle"></i> ${loaded}`;
-            fileCount.textContent = loaded;
-            if (month && monthData[month]) {
-                footerMonthTag.textContent = month.toUpperCase();
-            } else {
-                footerMonthTag.textContent = '—';
-            }
         }
 
         // ─── process file data from ArrayBuffer ─────────────────────────────
@@ -964,34 +981,27 @@
 
             const allPatterns = [];
 
-            // Title case: January.xlsx
             for (const m of monthNames) allPatterns.push(`${m}.xlsx`);
-            // Lowercase: january.xlsx
             for (const m of monthNames) allPatterns.push(`${m.toLowerCase()}.xlsx`);
-            // UPPERCASE: JANUARY.xlsx
             for (const m of monthNames) allPatterns.push(`${m.toUpperCase()}.xlsx`);
 
-            // Abbreviations
             for (const a of monthAbbr) {
                 allPatterns.push(`${a}.xlsx`);
                 allPatterns.push(`${a.toLowerCase()}.xlsx`);
                 allPatterns.push(`${a.toUpperCase()}.xlsx`);
             }
 
-            // With underscores
             for (const m of monthNames) {
                 allPatterns.push(`${m}_data.xlsx`);
                 allPatterns.push(`${m.toUpperCase()}_data.xlsx`);
                 allPatterns.push(`${m.toLowerCase()}_data.xlsx`);
             }
 
-            // With year
             for (const m of monthNames) {
                 allPatterns.push(`${m} 2026.xlsx`);
                 allPatterns.push(`${m.toUpperCase()} 2026.xlsx`);
             }
 
-            // Without extension
             for (const m of monthNames) {
                 allPatterns.push(m);
                 allPatterns.push(m.toUpperCase());
@@ -1030,12 +1040,6 @@
 
             if (loadedCount > 0) {
                 populateDropdown();
-                if (activeMonth && monthData[activeMonth]) {
-                    displayMonth(activeMonth);
-                } else {
-                    const firstMonth = Object.keys(monthData).sort((a, b) => getMonthNumber(a) - getMonthNumber(b))[0];
-                    displayMonth(firstMonth);
-                }
             } else {
                 dashboardContainer.innerHTML = `
                         <div class="placeholder-card">
@@ -1050,13 +1054,12 @@
                 totalOverall.textContent = '0';
                 totalUniq.textContent = '0';
                 totalPasses.textContent = '0.00';
-                rowCount.textContent = '0';
-                footerMonthTag.textContent = '—';
                 loadedMonthsBadge.innerHTML = `<i class="fas fa-check-circle"></i> 0`;
-                fileCount.textContent = '0';
                 monthSelect.innerHTML = '<option value="">-- No months --</option>';
                 updateHeaderTitle(null);
             }
+
+            updateLoadedBadge();
 
             if (loadedCount === 0) {
                 showError('No Excel files found. Please upload files or use the Browse button.');
@@ -1100,8 +1103,6 @@
 
                 if (loadedCount > 0) {
                     populateDropdown();
-                    const firstMonth = Object.keys(monthData).sort((a, b) => getMonthNumber(a) - getMonthNumber(b))[0];
-                    displayMonth(firstMonth);
                 } else {
                     dashboardContainer.innerHTML = `
                             <div class="placeholder-card">
@@ -1109,6 +1110,11 @@
                                 <p>No valid months loaded. Please check file names and content.</p>
                             </div>
                         `;
+                    totalOverall.textContent = '0';
+                    totalUniq.textContent = '0';
+                    totalPasses.textContent = '0.00';
+                    loadedMonthsBadge.innerHTML = `<i class="fas fa-check-circle"></i> 0`;
+                    updateHeaderTitle(null);
                 }
                 this.remove();
             });
@@ -1117,11 +1123,102 @@
             fileInput.click();
         }
 
+        // ─── Screenshot function ─────────────────────────────────────────────
+        async function takeScreenshot() {
+            const card = document.getElementById('dashboardCard');
+            if (!card) {
+                showToast('No dashboard card to capture. Please load data first.', 'error');
+                return;
+            }
+
+            try {
+                showToast('Capturing screenshot...', 'info');
+                const canvas = await html2canvas(card, {
+                    scale: 2,
+                    backgroundColor: '#ffffff',
+                    allowTaint: true,
+                    useCORS: true,
+                    logging: false,
+                });
+
+                const link = document.createElement('a');
+                link.download = `PIF_PASSES_${activeMonth || 'DASHBOARD'}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                showToast('Screenshot saved successfully!', 'success');
+            } catch (err) {
+                console.error('Screenshot error:', err);
+                showToast('Failed to capture screenshot. Please try again.', 'error');
+            }
+        }
+
+        // ─── Download Excel file ─────────────────────────────────────────────
+        function downloadExcelFile() {
+            if (!activeMonth) {
+                showToast('No month selected. Please select a month first.', 'error');
+                return;
+            }
+
+            const monthName = activeMonth;
+            // Try different filename variations
+            const fileNames = [
+                `${monthName.toUpperCase()}.xlsx`,
+                `${monthName}.xlsx`,
+                `${monthName.toLowerCase()}.xlsx`,
+                `${monthName}_data.xlsx`,
+                `${monthName.toUpperCase()}_data.xlsx`,
+            ];
+
+            // Use a unique set
+            const uniqueFileNames = [...new Set(fileNames)];
+
+            // Try to fetch the file
+            let fetchAttempted = false;
+
+            async function attemptDownload() {
+                for (const fileName of uniqueFileNames) {
+                    try {
+                        const response = await fetch(fileName);
+                        if (response.ok) {
+                            const blob = await response.blob();
+                            const link = document.createElement('a');
+                            link.href = URL.createObjectURL(blob);
+                            link.download = fileName;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+
+                            showToast(`Downloaded ${fileName}`, 'success');
+                            return;
+                        }
+                    } catch (err) {
+                        // Continue to next filename
+                    }
+                }
+
+                // If we get here, no file was found
+                showToast(`Could not find Excel file for ${monthName}. Make sure it's in the repository.`, 'error');
+            }
+
+            attemptDownload();
+        }
+
         // ─── Event Listeners ──────────────────────────────────────────────────
 
-        loadBtn.addEventListener('click', function() {
-            manualFileSelect();
-        });
+        // Browse button - manual file selection
+        const loadBtn = document.getElementById('loadBtn');
+        if (loadBtn) {
+            loadBtn.addEventListener('click', manualFileSelect);
+        } else {
+            // Create the browse button if it doesn't exist (it should, but just in case)
+            const browseBtn = document.createElement('button');
+            browseBtn.className = 'btn btn-primary';
+            browseBtn.innerHTML = '<i class="fas fa-folder-open"></i> Browse';
+            browseBtn.addEventListener('click', manualFileSelect);
+            document.querySelector('.action-bar').prepend(browseBtn);
+        }
 
         monthSelect.addEventListener('change', function() {
             const month = this.value;
@@ -1135,7 +1232,6 @@
                         </div>
                     `;
                 updateHeaderStats(null);
-                updateFooter(null);
                 updateHeaderTitle(null);
             }
         });
@@ -1144,7 +1240,6 @@
             for (const key in monthData) delete monthData[key];
             activeMonth = null;
             loadedMonthsBadge.innerHTML = `<i class="fas fa-check-circle"></i> 0`;
-            fileCount.textContent = '0';
             hideError();
             dashboardContainer.innerHTML = `
                     <div class="placeholder-card">
@@ -1155,13 +1250,14 @@
             totalOverall.textContent = '0';
             totalUniq.textContent = '0';
             totalPasses.textContent = '0.00';
-            rowCount.textContent = '0';
-            footerMonthTag.textContent = '—';
             updateHeaderTitle(null);
             monthSelect.innerHTML = '<option value="">-- Loading --</option>';
 
             setTimeout(fetchExcelFilesFromRepo, 300);
         });
+
+        screenshotBtn.addEventListener('click', takeScreenshot);
+        downloadBtn.addEventListener('click', downloadExcelFile);
 
         // ─── Initialise ──────────────────────────────────────────────────────
         dashboardContainer.innerHTML = `
@@ -1172,7 +1268,6 @@
                 </div>
             `;
         loadedMonthsBadge.innerHTML = `<i class="fas fa-check-circle"></i> 0`;
-        footerMonthTag.textContent = '—';
         updateHeaderTitle(null);
         monthSelect.innerHTML = '<option value="">-- Loading --</option>';
 
